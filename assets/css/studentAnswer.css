@@ -1,0 +1,105 @@
+#idTopic{
+	font-size: 1.8em;
+	font-weight: bolder;
+}
+.HOutLine{
+	background-color: #60489D;
+	height: 200px;
+}
+.BOutLine{
+	background-color: #EDE7F2;
+	margin: auto;
+	padding: 10px;
+}
+.fBody{
+	margin: auto;
+	width: 95%;
+	text-align: center;
+	margin-top: -100px;
+	padding: 15px;
+	background-color: white;
+}
+.Header{
+	text-align: center;
+}
+.fLeft{
+	float: left;
+	margin-left: 10%;	
+}
+.QuestionHeader{
+	width: 100%;
+	margin: auto;
+}
+.Question .fLeft, .ansOption .fLeft{
+	margin-left: 20%;
+}
+.btnShape{
+	color: white;
+	background-color: #833B64;
+	cursor: pointer;
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-radius: 10px;
+}
+.Questions{
+	padding: 30px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.QuestionNumber{
+	font-size: 1.5em;
+}
+.chkArea{
+	width: 25px;
+	height: 25px;
+	border: 1px solid #aaa;
+}
+.Title{
+	border-radius: 0.8em;
+	font-size: 1.6em;
+	margin: auto;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	width: 10em;
+	text-align: center;
+}
+td .chkArea{
+	margin: auto;
+	width: 15px;
+	height: 15px;
+	margin: 5px;
+	border-radius: 50%;
+}
+td input{
+	width: 100%;
+}
+table{
+	width: 80%;
+	margin-left: 10%;
+}
+td{
+	padding: 2px;
+}
+td textarea{
+	width: 100%;
+}
+.saveQuestionsBtn{
+	background-color: #A93064;
+	font-size: 1.4em;
+	border-radius: 0.7em;
+	color: white;
+}
+.HideItem {
+	display: none;
+}
+.ShowItem {
+	display: block;
+}
+.chkArea {
+	cursor: pointer;
+	background-color: white;
+}
+.chkArea.hover{
+	background-color: #3C58A7;
+}
