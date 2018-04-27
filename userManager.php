@@ -1,13 +1,13 @@
 <?php
 	function getConn(){
-		$DBservername = 'localhost';
-		$DBusername = 'earthso6_root';
-		$DBpassword = '123guraud!';
-		$DBname = 'earthso6_question_user';
 		// $DBservername = 'localhost';
-		// $DBusername = 'root';
-		// $DBpassword = '';
-		// $DBname = 'questionnaire';
+		// $DBusername = 'earthso6_root';
+		// $DBpassword = '123guraud!';
+		// $DBname = 'earthso6_question_user';
+		$DBservername = 'localhost';
+		$DBusername = 'root';
+		$DBpassword = '';
+		$DBname = 'questionnaire';
 		$conn = new mysqli( $DBservername, $DBusername, $DBpassword, $DBname);
 		return $conn;
 	}

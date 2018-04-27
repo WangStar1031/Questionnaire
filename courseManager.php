@@ -78,7 +78,7 @@
 			</div>
 			<div class="row">
 				<div class="col-lg-5 col-md-5 col-xs-3"></div>
-				<input class="btnShape col-lg-2 col-md-2 col-xs-6" action="action" onclick="window.history.go(-1); return false;" type="button" value="Back" />
+				<input class="btnShape col-lg-2 col-md-2 col-xs-6" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Back" />
 				<div class="col-lg-5 col-md-5 col-xs-3"></div>
 			</div>
 		</div>
@@ -514,8 +514,4 @@
 			}
 		});
 	}
-	document.getElementById("exitIcon").onclick = function(){
-		console.log("exit");
-		window.location.href = "admin.php";
-	};
 </script>

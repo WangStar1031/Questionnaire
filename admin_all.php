@@ -14,10 +14,10 @@
 	.edtBtn:hover{
 		color: red;
 	}
-	.exitIcon:hover{
+	#exitIcon:hover{
 		cursor: pointer;
 	}
-	.exitIcon{
+	#exitIcon{
 		position: relative; left: 49%; margin-bottom: -26px;
 	}
 </style>
@@ -31,9 +31,7 @@
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
-		<form action="admin.php" method="POST">
-			<input type="image" class="exitIcon" src="./assets/img/exit.png" alt="Submit Form">
-		</form>
+		<img  id="exitIcon" src="./assets/img/exit.png">
 		<div class="Header">
 			<h1>Topics</h1>
 		</div>

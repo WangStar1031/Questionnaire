@@ -129,6 +129,10 @@
 			<div class="col-lg-1 col-md-1"></div>
 			<br>
 		</div>
+		<div class="row">
+			<input class="btnShape" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Back" />
+			<!-- <div class="col-lg-4 col-md-3 col-xs-2"></div> -->
+		</div>
 	</div>
 </div>
 <script type="text/javascript" src="assets/js/cookie.js"></script>
