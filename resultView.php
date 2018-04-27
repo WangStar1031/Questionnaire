@@ -74,6 +74,12 @@
 		margin-left: 1px;
 		margin-right: 1px;
 	}
+	#exitIcon:hover{
+		cursor: pointer;
+	}
+	#exitIcon{
+		position: relative; left: 49%; margin-bottom: -26px;
+	}
 </style>
 <?php
 	include './userManager.php';
@@ -86,6 +92,7 @@
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
+		<img  id="exitIcon" src="./assets/img/exit.png">
 		<div class="Header">
 			<h1>Result View</h1>
 		</div>
@@ -124,6 +131,7 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="assets/js/cookie.js"></script>
 <script type="text/javascript">
 	var arrTitles = [];
 	arrTitles = JSON.parse('<?= $arrTitles ?>');

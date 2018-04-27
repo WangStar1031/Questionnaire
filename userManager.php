@@ -1,13 +1,13 @@
 <?php
 	function getConn(){
-		// $DBservername = 'localhost';
-		// $DBusername = 'earthso6_root';
-		// $DBpassword = '123guraud!';
-		// $DBname = 'earthso6_question_user';
 		$DBservername = 'localhost';
-		$DBusername = 'root';
-		$DBpassword = '';
-		$DBname = 'questionnaire';
+		$DBusername = 'earthso6_root';
+		$DBpassword = '123guraud!';
+		$DBname = 'earthso6_question_user';
+		// $DBservername = 'localhost';
+		// $DBusername = 'root';
+		// $DBpassword = '';
+		// $DBname = 'questionnaire';
 		$conn = new mysqli( $DBservername, $DBusername, $DBpassword, $DBname);
 		return $conn;
 	}
@@ -23,6 +23,15 @@
 		if( $result->num_rows > 0)
 			return true;
 		return false;
+	}
+	if( isset($_POST['adminVerify'])){
+		$adminName = $_POST['adminVerify'];
+		$adminPass = $_POST['password'];
+		if( VerifyAdminInfo($adminName, $adminPass)){
+			echo "YES";
+		} else{
+			echo "NO";
+		}
 	}
 	function VerifyStudentInfo($strNumber, $strName){
 		$conn = getConn();

@@ -25,6 +25,12 @@
 	#CourseMngTbl th{
 		cursor: pointer;
 	}
+	#exitIcon:hover{
+		cursor: pointer;
+	}
+	#exitIcon{
+		position: relative; left: 49%; margin-bottom: -26px;
+	}
 </style>
 <body>
 <iframe src="" style="display: none;" id="iframeTag" name="iframeTag"></iframe>
@@ -32,7 +38,11 @@
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
-		<div class="Header">
+		<img  id="exitIcon" src="./assets/img/exit.png">
+<!-- 		<form action="admin.php" method="POST">
+			<input type="image" id="exitIcon" src="./assets/img/exit.png" alt="Submit Form">
+		</form>
+ -->		<div class="Header">
 			<h1>Course Management</h1>
 		</div>
 		<div class="mainCoursePan ShowItem">
@@ -504,4 +514,8 @@
 			}
 		});
 	}
+	document.getElementById("exitIcon").onclick = function(){
+		console.log("exit");
+		window.location.href = "admin.php";
+	};
 </script>

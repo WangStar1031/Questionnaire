@@ -29,6 +29,12 @@
 	.mainTable th{
 		cursor: pointer;
 	}
+	#exitIcon:hover{
+		cursor: pointer;
+	}
+	#exitIcon{
+		position: relative; left: 49%; margin-bottom: -26px;
+	}
 </style>
 
 <body>
@@ -36,6 +42,7 @@
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
+		<img  id="exitIcon" src="./assets/img/exit.png">
 		<h1>Individual Manager</h1>
 		<div>
 			<table class="col-lg-12 col-md-12 col-xs-12 mainTable">
@@ -142,6 +149,7 @@
 		<div class="btnConfirm">Confirm</div>
 	</div>
 </div>
+<script type="text/javascript" src="assets/js/cookie.js"></script>
 
 <script type="text/javascript">
 	var modal = document.getElementById("myModal");

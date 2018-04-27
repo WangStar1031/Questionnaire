@@ -12,6 +12,8 @@
 		$userName = $_GET['uName'];
 		$userNumber = $_GET['uNum'];
 		$title = $_GET['title'];
+	} else{
+		exit();
 	}
 ?>
 </head>
