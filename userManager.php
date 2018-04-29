@@ -1,13 +1,16 @@
 <?php
 	function getConn(){
+		
 		// $DBservername = 'localhost';
 		// $DBusername = 'earthso6_root';
 		// $DBpassword = '123guraud!';
 		// $DBname = 'earthso6_question_user';
+		
 		$DBservername = 'localhost';
 		$DBusername = 'root';
 		$DBpassword = '';
 		$DBname = 'questionnaire';
+
 		$conn = new mysqli( $DBservername, $DBusername, $DBpassword, $DBname);
 		return $conn;
 	}
@@ -359,5 +362,86 @@
 		} else{
 			echo "NO";
 		}
+	}
+
+	function getAllTopicNames(){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "SELECT * FROM topic";
+		$result = $conn->query($sql);
+		$arrRetVal = array();
+		while($row = mysqli_fetch_assoc($result)){
+			$topic = new stdClass();
+			$topic->Id = $row['Id'];
+			$topic->TopicName = $row['TopicName'];
+			array_push( $arrRetVal, $topic);
+		}
+		return $arrRetVal;
+	}
+	function changeTopicName($_id, $_newName){
+		$conn = getConn();
+		if($conn->connect_error){
+			return false;
+		}
+		$sql = "UPDATE topic SET TopicName='$_newName' WHERE Id='$_id'";
+		return $conn->query($sql);
+	}
+	function removeTopic($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "DELETE FROM topic WHERE Id='$_id'";
+		return $conn->query($sql);
+	}
+	function insertNewTopic($_topicName){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "INSERT INTO topic(TopicName) VALUES('$_topicName')";
+		return $conn->query($sql);
+	}
+	function getAllSurveysFromTopic($_topicId){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "SELECT * FROM survey WHERE TopicId='$_topicId'";
+		$result = $conn->query($sql);
+		$arrRet = array();
+		while( $row = mysqli_fetch_assoc($result)){
+			$survey = new stdClass();
+			$survey->Id = $row['Id'];
+			$survey->SurveyName = $row['SurveyName'];
+			array_push( $arrRet, $survey);
+		}
+		return $arrRet;
+	}
+	function removeSurvey($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "DELETE FROM survey WHERE Id='$_id'";
+		return $conn->query($sql);
+	}
+	function insertNewSurvey($_topicId, $_newName){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "INSERT INTO survey(TopicId, SurveyName) VALUES('$_topicId', '$_newName')";
+		return $conn->query($sql);
+	}
+	function changeSurveyName($_id, $_newName){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "UPDATE survey SET SurveyName='$_newName' WHERE Id='$_id'";
+		return $conn->query($sql);
 	}
 ?>

@@ -16,6 +16,9 @@
 	th i{
 		border: solid #aaa; border-width: 0 3px 3px 0; display: inline-block; padding: 3px; margin-left: 10px; cursor: pointer;
 	}
+	#CourseMngTbl td{
+		border: 2px solid gray; text-align: center;
+	}
 	.up{
 		transform: rotate(-135deg); -webkit-transform: rotate(-135deg);
 	}
@@ -377,7 +380,7 @@
 	function orderTable(){
 		var arrInfos = [];
 		arrInfos = arrCourseInfo;
-		$(".addCoursePan table td").remove();
+		$(".addCoursePan table tr").filter(function(index){return index > 0;}).remove();
 		for( var i = 0; i < arrInfos.length; i++){
 			var strNumber = arrInfos[i].Number;
 			var strFName = arrInfos[i].FamilyName;
