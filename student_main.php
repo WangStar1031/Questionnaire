@@ -108,7 +108,33 @@
 <?php
 }
 ?>
-<script type="text/javascript">
+<script type="text/javascript">	
+function topicClicked(_idTopic){
+	var arrLis = $(".topicList li");
+	for( i = 0; i < arrLis.length; i++){
+		var elem = arrLis.eq(i).find(".topicId").eq(0);
+		if( elem.html() == _idTopic){
+			arrLis.removeClass("selected");
+			arrLis.eq(i).addClass("selected");
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				datatype: "json",
+				data: { getSurveys: _idTopic}
+			}).done( function(msg){
+				var arrSurveys = JSON.parse(msg);
+				console.log(arrSurveys);
+				var strHtml = "";
+				for( var i = 0; i < arrSurveys.length; i++){
+					var survey = arrSurveys[i];
+					strHtml += '<li><span class="surveyId">'+survey.Id+'</span><span class="surveyName"><a href="studentAnswer.php?uId='+'<?= $userId ?>'+'&title='+survey.Id+'">'+survey.SurveyName+'</a></span></li>';
+				}
+				$(".surveyList li").remove();
+				$(".surveyList").append(strHtml);
+			});
+		}
+	}
+}
 function setCookie(cname,cvalue,exdays) {
 	var d = new Date();
 	d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -139,5 +165,4 @@ document.getElementById("exitIconST").onclick = function(){
 	setCookie("QuestionnaireStudentName", "");
 	window.location.href = "student.php";
 }
-
 </script>
