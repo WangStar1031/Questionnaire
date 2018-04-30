@@ -131,6 +131,9 @@ function getCookie(cname) {
 	}
 	return "";
 }
+if( getCookie("QuestionnaireStudentName") == ""){
+	window.location.href = "student.php";
+}
 document.getElementById("exitIconST").onclick = function(){
 	console.log("exit");
 	setCookie("QuestionnaireStudentName", "");

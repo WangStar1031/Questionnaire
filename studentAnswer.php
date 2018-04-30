@@ -33,12 +33,19 @@
 		font-size: 0.7em;
 		color: gray;
 	}
+	#exitIconST:hover{
+		cursor: pointer;
+	}
+	#exitIconST{
+		position: relative; left: 49%; margin-bottom: -26px;
+	}
 </style>
 <body>
 <div class="HOutLine container">
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
+		<img  id="exitIconST" src="./assets/img/exit.png">
 		<div class="Header">
 			<h1><?= $userName?>`s Answer<span> (<?= $topicTitle."-".$surveyTitle ?>)</span></h1>
 		</div>
@@ -118,5 +125,38 @@
 		answers = JSON.parse(<?= $answers ?>);
 	}
 	parseAnswers( answers);
+</script>
+
+<script type="text/javascript">
+function setCookie(cname,cvalue,exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires=" + d.toGMTString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+if( getCookie("QuestionnaireStudentName") == ""){
+	window.location.href = "student.php";
+}
+document.getElementById("exitIconST").onclick = function(){
+	console.log("exit");
+	setCookie("QuestionnaireStudentName", "");
+	window.location.href = "student.php";
+}
 </script>
 </body>
