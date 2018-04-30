@@ -369,7 +369,7 @@
 		if( $conn->connect_error){
 			return false;
 		}
-		$sql = "SELECT * FROM topic";
+		$sql = "SELECT * FROM topic ORDER BY Id";
 		$result = $conn->query($sql);
 		$arrRetVal = array();
 		while($row = mysqli_fetch_assoc($result)){
@@ -394,7 +394,11 @@
 			return false;
 		}
 		$sql = "DELETE FROM topic WHERE Id='$_id'";
-		return $conn->query($sql);
+		if( !$conn->query($sql)){
+			return false;
+		}
+		removeSurveyFromTopic($_id);
+		return true;
 	}
 	function insertNewTopic($_topicName){
 		$conn = getConn();
@@ -420,6 +424,14 @@
 		}
 		return $arrRet;
 	}
+	function removeSurveyFromTopic($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "DELETE FROM survey WHERE TopicId='$_id'";
+		return $conn->query($sql);
+	}
 	function removeSurvey($_id){
 		$conn = getConn();
 		if( $conn->connect_error){
@@ -443,5 +455,35 @@
 		}
 		$sql = "UPDATE survey SET SurveyName='$_newName' WHERE Id='$_id'";
 		return $conn->query($sql);
+	}
+	if(isset($_POST['addTopic'])){
+		if( insertNewTopic($_POST['addTopic'])){
+			$arrRet = array();
+			$arrRet = getAllTopicNames();
+			echo $arrRet[count($arrRet) - 1]->Id;
+		} else{
+			echo 0;
+		}
+	}
+	if( isset($_POST['changeTopicName'])){
+		echo changeTopicName($_POST['changeTopicName'], $_POST['newVal']);
+	}
+	if( isset($_POST['removeTopic'])){
+		echo removeTopic($_POST['removeTopic']);
+	}
+	if( isset($_POST['getSurveys'])){
+		echo json_encode(getAllSurveysFromTopic($_POST['getSurveys']));
+	}
+	if( isset($_POST['addSurvey'])){
+		if( insertNewSurvey($_POST['addSurvey'], $_POST['newVal'])){
+			$arrBuff = array();
+			$arrBuff = getAllSurveysFromTopic($_POST['addSurvey']);
+			echo $arrBuff[count($arrBuff) - 1]->Id;
+		} else{
+			echo 0;
+		}
+	}
+	if( isset($_POST['changeSurveyName'])){
+		echo  changeSurveyName($_POST['changeSurveyName'], $_POST['newVal']);
 	}
 ?>

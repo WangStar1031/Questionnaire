@@ -20,6 +20,27 @@
 	#exitIcon{
 		position: relative; left: 49%; margin-bottom: -26px;
 	}
+	.addNewBtn{
+		cursor: pointer; background-color: #A93064; font-size: 20px; border-radius: 50%; color: white;padding: 0 5 0 5; margin-left: 10px;
+	}
+	.topicList, .surveyList{
+		border: 1px solid black; padding-left: 0px; height: 300px; overflow: auto;
+	}
+	.topicList li, .surveyList li{
+		cursor: pointer; list-style-type: none; padding: 5px; text-align: left;
+	}
+	.topicList li.selected{
+		background-color: #cef;
+	}
+	.edtTopic:hover, .delTopic:hover, .delSurvey:hover, .edtSurvey:hover{
+		color: red;
+	}
+	.edtTopic, .delTopic, .delSurvey, .edtSurvey{
+		float: right; padding-right: 5px;
+	}
+	.topicId, .surveyId{
+		display: none;
+	}
 </style>
 </head>
 
@@ -38,6 +59,57 @@
 		<div class="Lessons">
 			<div class="col-lg-3 col-md-2 col-xs-1"></div>
 			<div class="col-lg-6 col-md-8 col-xs-10">
+				<div class="col-xs-6">
+					<h3>Topics <span class="addNewBtn" onclick="addTopic()">+</span></h3>
+					<ul class="topicList">
+					<?php
+						include_once('userManager.php');
+						$arrTopics = getAllTopicNames();
+						$idFirstTopic = 0;
+						if( $arrTopics){
+							$idFirstTopic = $arrTopics[0]->Id;
+							for( $i = 0; $i < count($arrTopics); $i++){
+								$topic = $arrTopics[$i];
+								$id = $topic->Id;
+								$name = $topic->TopicName;
+					?>
+						<li <?php if($i==0) echo 'class="selected"'; ?> onclick="topicClicked(<?= $id ?>)">
+							<span class="topicId"><?= $id ?></span>
+							<span class="topicName"><?= $name ?></span>
+							<span class="delTopic" onclick="delTopic(<?= $id ?>)">&#x2716;</span>
+							<span class="edtTopic" onclick="editTopic(<?= $id ?>)">&#x270E;</span>
+						</li>
+					<?php
+							}
+						} else{
+							echo "No Topics.";
+						}
+					?>
+					</ul>
+				</div>
+				<div class="col-xs-6">
+					<h3>Surveys <span class="addNewBtn" onclick="addSurvey()">+</span></h3>
+					<ul class="surveyList">
+					<?php
+						if( $idFirstTopic != 0){
+							$arrSurveys = getAllSurveysFromTopic( $idFirstTopic);
+							for( $i = 0; $i < count($arrSurveys); $i++){
+								$survey = $arrSurveys[$i];
+								$id = $survey->Id;
+								$name = $survey->SurveyName;
+					?>
+						<li>
+							<span class="surveyId"><?= $id ?></span>
+							<span class="surveyName"><a href="questionMaker.php?title=<?= $id ?>"><?= $name ?></a></span>
+							<span class="delSurvey" onclick="delSurvey(<?= $id ?>)">&#x2716;</span>
+							<span class="edtSurvey" onclick="editSurvey(<?= $id ?>)">&#x270E;</span>
+						</li>
+					<?php
+							}
+						}
+					?>
+					</ul>
+				</div>
 				<table>
 					<tr>
 						<td colspan="2">Topics</td>
@@ -132,6 +204,132 @@
 			}).done( function(msg){
 				if( msg == "OK"){
 					$("table").find("tr").eq(_i).find(".Survey").eq(0).html(newVal);
+				}
+			});
+		}
+	}
+	function addTopic(){
+		var newVal = prompt("Please enter new Topic Name.");
+		if( newVal != null){
+			var names = $(".topicName");
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				data: { addTopic: newVal}
+			}).done( function(msg){
+				var strHtml = '<li onclick="topicClicked('+msg+')"><span class="topicId">'+msg+'</span><span class="topicName">'+newVal+'</span><span class="delTopic" onclick="delTopic('+msg+')">&#x2716;</span><span class="edtTopic" onclick="editTopic('+msg+')">&#x270E;</span></li>';
+				$(".topicList").append(strHtml);
+			});
+		}
+	}
+	function topicClicked(_idTopic){
+		var arrLis = $(".topicList li");
+		for( i = 0; i < arrLis.length; i++){
+			var elem = arrLis.eq(i).find(".topicId").eq(0);
+			if( elem.html() == _idTopic){
+				arrLis.removeClass("selected");
+				arrLis.eq(i).addClass("selected");
+				$.ajax({
+					method: "POST",
+					url: "userManager.php",
+					datatype: "json",
+					data: { getSurveys: _idTopic}
+				}).done( function(msg){
+					var arrSurveys = JSON.parse(msg);
+					var strHtml = "";
+					for( var i = 0; i < arrSurveys.length; i++){
+						var survey = arrSurveys[i];
+						strHtml += '<li><span class="surveyId">'+survey.Id+'</span><span class="surveyName"><a href="questionMaker.php?title='+survey.Id+'">'+survey.SurveyName+'</a></span><span class="delSurvey" onclick="delSurvey('+survey.Id+')">&#x2716;</span><span class="edtSurvey" onclick="editSurvey('+survey.Id+')">&#x270E;</span></li>';
+						// console.log(arrSurveys[i]);
+					}
+					$(".surveyList li").remove();
+					$(".surveyList").append(strHtml);
+				});
+			}
+		}
+	}
+	function editTopic(_idTopic){
+		var oldVal = $(".topicList li").filter(function(){
+			return $(this).find(".topicId").eq(0).html() == _idTopic;
+		}).find(".topicName").html();
+		var newVal = prompt("Please enter Topic Name.", oldVal);
+		if( newVal != null){
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				data: { changeTopicName: _idTopic, newVal: newVal}
+			}).done( function(msg){
+				console.log(msg);
+				if( !msg){
+					alert("Can not change.");
+					return;
+				}
+				$(".topicList li").filter(function(){
+					return $(this).find(".topicId").eq(0).html() == _idTopic;
+				}).find(".topicName").html(newVal);
+			});
+		}
+	}
+	function delTopic(_idTopic){
+		var aa = confirm("Are you sure remove?");
+		if( aa == true){
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				data: { removeTopic: _idTopic}
+			}).done( function(msg){
+				if( !msg){
+					alert("Can not remove.");
+					return;
+				}
+				$(".topicList li").filter(function(){
+					return $(this).find(".topicId").eq(0).html() == _idTopic;
+				}).find(".topicName").html(newVal);
+			});
+		}
+	}
+	function addSurvey(){
+		var idTopic =  $(".topicList .selected").eq(0).find(".topicId").eq(0).html();
+		var newVal = prompt("Please enter new Survey Name.");
+		if( newVal != null){
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				data: { addSurvey: idTopic, newVal: newVal}
+			}).done( function(msg){
+				console.log(msg);
+				if( !msg){
+					alert("Can not insert.");
+					return;
+				}
+				var strHtml = '<li><span class="surveyId">'+msg+'</span><span class="surveyName"><a href="">'+newVal+'</a></span><span class="delSurvey" onclick="delSurvey('+msg+')">&#x2716;</span><span class="edtSurvey" onclick="editSurvey('+msg+')">&#x270E;</span></li>';
+				$(".surveyList").append(strHtml);
+			});
+		}
+	}
+	function editSurvey(_idSurvey){
+		var oldName = $(".surveyList li").filter(function(){
+			return $(this).find(".surveyId").html() == _idSurvey;
+		}).find(".surveyName a").html();
+		var newName = prompt("Please enter new Survey Name.", oldName);
+		if( newName != null){
+			console.log(newName);
+			var equalElem = $(".surveyList li").filter(function() {
+				return $(this).find(".surveyId").html() != _idSurvey && $(this).find(".surveyName a").html() == newName;
+			});
+			if( equalElem.length != 0){
+				alert("Exist equal Name.");
+				return;
+			}
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				data: { changeSurveyName: _idSurvey, newVal: newName}
+			}).done( function(msg){
+				if( msg){
+					$(".surveyList li").filter(function(){
+						return $(this).find(".surveyId").html() == _idSurvey;
+					}).find(".surveyName a").html(newName);
 				}
 			});
 		}

@@ -41,9 +41,11 @@
 	$fileName = $_GET['title'];
 	$new = "new";
 	$contents = "";
-	if( !isset($_GET['new'])){
+	$fName = "assets/questions/".$fileName.".txt";
+	if( file_exists($fName)){
+	// if( !isset($_GET['new'])){
 		$new = "";
-		$contents = file_get_contents("assets/questions/".$fileName.".txt");
+		$contents = file_get_contents($fName);
 		// echo $contents;
 	}
 ?>
