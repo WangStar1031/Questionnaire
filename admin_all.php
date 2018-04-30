@@ -110,45 +110,11 @@
 					?>
 					</ul>
 				</div>
-				<table>
-					<tr>
-						<td colspan="2">Topics</td>
-						<td colspan="2">Survey</td>
-					</tr>
-				<?php
-					$dir = 'assets/questions/';
-					$files = scandir($dir);
-					$arrRet = array();
-					$rowCount = 0;
-					for( $i = 0; $i < count($files); $i ++){
-						$fName = $files[$i];
-						if( $fName != '.' && $fName != '..'){
-							$rowCount ++;
-							$pos = strpos($fName, ".");
-							$buff = substr($fName, 0, $pos);
-							$contents = file_get_contents($dir . $fName);
-				?>
-					<tr>
-						<td><a href="questionMaker.php?title=<?= $buff ?>" class="Topic" style="text-align: left;"></a></td>
-						<td class="edtBtn" onclick="changeTopics(<?= $rowCount ?>)">&#x270E;</td>
-						<td class="Survey"><?= $buff ?></td>
-						<td class="edtBtn" onclick="changeSurvey(<?= $rowCount ?>)">&#x270E;</td>
-						<script type="text/javascript">
-							var buff = <?= $contents ?>;
-							arrTopics.push(buff.Topic);
-						</script>
-					</tr>
-				<?php
-						}
-					}
-				?>
-				</table>
 			</div>
 			<div class="col-lg-3 col-md-2 col-xs-1"></div>
 			<div style="clear: both;"></div>
 			<br>
 		</div>
-		<div class="addNew" onclick="addNew()">+ NEW +</div>
 		<div class="row">
 			<div class="col-lg-1 col-md-1"></div>
 
