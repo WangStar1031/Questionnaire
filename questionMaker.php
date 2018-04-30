@@ -15,11 +15,27 @@
 <body>
 <div class="HOutLine container">		
 </div>
+<?php
+	$fileName = $_GET['title'];
+	include_once("userManager.php");
+	$survey = getSurveyFromId($fileName);
+	// var_dump($survey);
+	$TopicName = getTopicNameFromId($survey['TopicId']);
+	$SurveyName = $survey['SurveyName'];
+?>
 <div class="BOutLine container">
 	<div class="fBody">
-		<div class="Header">
+		<div class="Header row">
 			<h1>Questionnaire Maker</h1>
-				<p>Topic <input type="text" name="Travel" placeholder="Please enter the Topic" id="idTopic"></p>
+			<div class="col-xs-12 row">
+				<div class="col-xs-6">
+					<h3>Topic <input type="text" id="idTopic" readonly value="<?= $TopicName ?>"></h3>
+				</div>
+				<div class="col-xs-6">
+					<h3>Survey <input type="text" id="idSurvey" readonly value="<?= $SurveyName ?>"></h3>
+				</div>
+			</div>
+				
 		</div>
 		<div class="addQuestion row">
 			<div class="col-lg-1 col-md-1 col-xs-1"></div>
@@ -38,7 +54,6 @@
 	</div>
 </div>
 <?php
-	$fileName = $_GET['title'];
 	$new = "new";
 	$contents = "";
 	$fName = "assets/questions/".$fileName.".txt";

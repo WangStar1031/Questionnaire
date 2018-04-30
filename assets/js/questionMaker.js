@@ -1,11 +1,11 @@
 var nQuestionCount = 0;
-var strTopic = "";
+// var strTopic = "";
 function addQuestion() {
-	strTopic = document.getElementById("idTopic").value;
-	if( strTopic == ""){
-		alert("Please enter the Topic Name!");
-		return;
-	}
+	// strTopic = document.getElementById("idTopic").value;
+	// if( strTopic == ""){
+	// 	alert("Please enter the Topic Name!");
+	// 	return;
+	// }
 	nQuestionCount ++;
 	var elem = $("#Questions").clone();
 	elem.removeClass("HideItem");
@@ -173,8 +173,8 @@ function chkDelClicked( nNumber, nRow){
 function saveQuestion(){
 	var qStrings = {};
 	var arrQuestions = [];
-	strTopic = document.getElementById("idTopic").value;
-	qStrings.Topic = strTopic;
+	// strTopic = document.getElementById("idTopic").value;
+	// qStrings.Topic = strTopic;
 	for( var i = 1; i < nQuestionCount+1; i++){
 		var questions = {};
 		var selValue = $("#Questions"+i).find(".QuestionHeader .QuestionKind select").val();
@@ -267,8 +267,8 @@ function addShtChoiceFromData(nQNum, nANum, strAnswer, bHover, strFeedBack){
 }
 function parseContents( jsonContents){
 	if( jsonContents =="")return;
-	strTopic = jsonContents.Topic;
-	$("#idTopic").val(strTopic);
+	// strTopic = jsonContents.Topic;
+	// $("#idTopic").val(strTopic);
 	for( var i = 0; i < jsonContents.Questions.length; i++){
 		var Questions = jsonContents.Questions[i];
 		strType = Questions.type;
@@ -302,8 +302,8 @@ function parseContents( jsonContents){
 				parent.find(".shortAnswerSection").find(".fbOption .chkArea").addClass("hover");
 			}
 		}
-		mulDelClicked(i, 1);
-		chkDelClicked(i, 1);
+		mulDelClicked(i+1, 1);
+		chkDelClicked(i+1, 1);
 		for( var j = 0; j < Questions.answers.length; j++){
 			var answers = Questions.answers[j];
 			var chr = answers.chara;

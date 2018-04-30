@@ -380,6 +380,19 @@
 		}
 		return $arrRetVal;
 	}
+	function getTopicNameFromId($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return "";
+		}
+		$sql = "SELECT * FROM topic WHERE Id='$_id'";
+		$result = $conn->query($sql);
+		if( $result->num_rows > 0){
+			$row = mysqli_fetch_assoc($result);
+			return $row['TopicName'];
+		}
+		return "";
+	}
 	function changeTopicName($_id, $_newName){
 		$conn = getConn();
 		if($conn->connect_error){
@@ -423,6 +436,19 @@
 			array_push( $arrRet, $survey);
 		}
 		return $arrRet;
+	}
+	function getSurveyFromId($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return null;
+		}
+		$sql = "SELECT * FROM survey WHERE Id='$_id'";
+		$result = $conn->query($sql);
+		if( $result->num_rows > 0){
+			$row = mysqli_fetch_assoc($result);
+			return $row;
+		}
+		return null;
 	}
 	function removeSurveyFromTopic($_id){
 		$conn = getConn();
