@@ -1,11 +1,11 @@
 var nQuestionCount = 0;
-var strTopic = "";
+// var strTopic = "";
 function addQuestion(strQuestion) {
-	strTopic = document.getElementById("idTopic").value;
-	if( strTopic == ""){
-		alert("Please enter the Topic Name!");
-		return;
-	}
+	// strTopic = document.getElementById("idTopic").value;
+	// if( strTopic == ""){
+	// 	alert("Please enter the Topic Name!");
+	// 	return;
+	// }
 	nQuestionCount ++;
 	var elem = $("#Questions").clone();
 	elem.removeClass("HideItem");
@@ -65,7 +65,7 @@ function getKind(strClass){
 function saveQuestion(){
 	var qStrings = {};
 	var arrQuestions = [];
-	qStrings.Topic = $("#idTopic").html();
+	// qStrings.Topic = $("#idTopic").html();
 	for( var i = 1; i < nQuestionCount+1; i++){
 		var questions = {};
 		var elemKind = $("#Questions"+i).find(".ShowItem");
@@ -137,8 +137,8 @@ function addShtChoiceFromData(nQNum, nANum, strAnswer){
 }
 function parseContents( jsonContents){
 	if( jsonContents =="")return;
-	strTopic = jsonContents.Topic;
-	$("#idTopic").html( strTopic);
+	// strTopic = jsonContents.Topic;
+	// $("#idTopic").html( strTopic);
 	for( var i = 0; i < jsonContents.Questions.length; i++){
 		var Questions = jsonContents.Questions[i];
 		strType = Questions.type;

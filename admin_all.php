@@ -301,4 +301,4 @@
 		}
 	}
 </script>
-<script type="text/javascript" src="assets/js/cookie.js"></script>
+<script type="text/javascript" src="assets/js/cookie.js?"></script>

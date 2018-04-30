@@ -14,6 +14,19 @@
 		$conn = new mysqli( $DBservername, $DBusername, $DBpassword, $DBname);
 		return $conn;
 	}
+	function getUserInfoFromId($_id){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return null;
+		}
+		$sql = "SELECT * FROM user WHERE Id='$_id'";
+		$result = $conn->query($sql);
+		if( $result->num_rows > 0){
+			$row = mysqli_fetch_assoc($result);
+			return $row;
+		}
+		return null;
+	}
 	function VerifyAdminInfo($name, $pass){
 		$conn = getConn();
 		if( $conn->connect_error){
@@ -50,6 +63,11 @@
 			return $row['Id'];
 		}
 		return 0;
+	}
+	if( isset($_POST['userVerify'])){
+		$userNumber = $_POST['userVerify'];
+		$userName = $_POST['studentName'];
+		echo VerifyStudentInfo($userNumber, $userName);
 	}
 	function IsExistsUserAnswer($userId){
 		$dir = './assets/answers/';

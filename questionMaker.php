@@ -12,17 +12,19 @@
 </style>
 </head>
 
-<body>
-<div class="HOutLine container">		
-</div>
 <?php
+	if( !isset($_GET['title']))exit();
 	$fileName = $_GET['title'];
+	if($fileName == "")exit();
 	include_once("userManager.php");
 	$survey = getSurveyFromId($fileName);
 	// var_dump($survey);
 	$TopicName = getTopicNameFromId($survey['TopicId']);
 	$SurveyName = $survey['SurveyName'];
 ?>
+<body>
+<div class="HOutLine container">
+</div>
 <div class="BOutLine container">
 	<div class="fBody">
 		<div class="Header row">

@@ -6,25 +6,41 @@
 
 
 <?php
-	$userName = '';
+	include_once("userManager.php");
+	$userId = '';
 	$title = '';
-	if( isset($_GET['uName'])){
-		$userName = $_GET['uName'];
-		$userNumber = $_GET['uNum'];
+	if( isset($_GET['uId'])){
+		$userId = $_GET['uId'];
 		$title = $_GET['title'];
 	} else{
 		exit();
 	}
+	$userInfo = getUserInfoFromId($userId);
+	if( $userInfo == null) exit();
+	$userNumber = $userInfo['UserNumber'];
+	$userFName = $userInfo['FamilyName'];
+	$userGName = $userInfo['GivenName'];
+	$userName = $userFName . " " . $userGName;
+	$surveyInfo = getSurveyFromId($title);
+	$topicId = $surveyInfo['TopicId'];
+	$surveyTitle = $surveyInfo['SurveyName'];
+	$topicTitle = getTopicNameFromId($topicId);
+	if( $surveyInfo == null) exit();
 ?>
 </head>
+<style type="text/css">
+	.Header h1 span{
+		font-size: 0.7em;
+		color: gray;
+	}
+</style>
 <body>
-<div class="HOutLine container">		
+<div class="HOutLine container">
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
 		<div class="Header">
-			<h1><?= $userName?>`s Answer (<?= $title?>)</h1>
-				<p>Topic <span id="idTopic"></span></p>
+			<h1><?= $userName?>`s Answer<span> (<?= $topicTitle."-".$surveyTitle ?>)</span></h1>
 		</div>
 		<div class="addQuestion">
 			<br>
@@ -37,27 +53,21 @@
 	</div>
 </div>
 <?php
-	$fileName = $_GET['title'];
-	$new = "new";
+	$fileName = $title;
 	$contents = "";
+	$isNew = "";
 	$answers = "";
 	$userId = $_GET['uId'];
-	if( !isset($_GET['new'])){
-		$new = "";
-		$contents = file_get_contents("assets/questions/".$fileName.".txt");
-		if( file_exists("assets/answers/".$userId."_".$fileName.".txt")){
-			$answers = file_get_contents("assets/answers/".$userId."_".$fileName.".txt");
-			// echo ($answers);
-		}
-		// else
-		// 	echo "No Answer";
+	$contents = json_encode(file_get_contents("assets/questions/".$title.".txt"));
+	if( file_exists("assets/answers/".$userId."_".$fileName.".txt")){
+		$isNew = "OK";
+		$answers = json_encode(file_get_contents("assets/answers/".$userId."_".$fileName.".txt"));
 	}
 ?>
 <script type="text/javascript">
 	var userName = '<?= $userName ?>';
 	var userNumber = '<?= $userNumber ?>';
 	var userId = '<?= $userId ?>'
-	var isNew = "<?= $new ?>" == "" ? false : true;	
 	var strTopic;
 	var fileName = "<?= $fileName ?>";
 </script>
@@ -68,42 +78,27 @@
 			<div class="QuestionNumber">Question1</div>
 		</div>
 		<div class="multiChoiceSection">
-			<!-- <p class="Title btnShape">Add multiple choice</p> -->
 			<div class="col-md-3 col-lg-3"></div>
 			<div class="Question col-md-6 col-lg-6 col-xs-12">
 				<table>
-					<!-- <tr>
-						<td>Q</td>
-						<td colspan="3"><input readonly type="text" name="mylQuestion" class="inputQuestion"></td>
-					</tr> -->
 				</table>
 				<div style="clear: both;"></div>
 			</div>
 			<div style="clear: both;"></div>
 		</div>
 		<div class="checkBoxSection HideItem">
-			<!-- <p class="Title btnShape">Check box</p> -->
 			<div class="col-md-3 col-lg-3"></div>
 			<div class="Question col-md-6 col-lg-6 col-xs-12">
 				<table>
-					<!-- <tr>
-						<td>Q</td>
-						<td colspan="3"><input readonly type="text" name="chkQuestion" class="inputQuestion"></td>
-					</tr> -->
 				</table>
 				<div style="clear: both;"></div>
 			</div>
 			<div style="clear: both;"></div>
 		</div>
 		<div class="shortAnswerSection HideItem">
-			<!-- <p class="Title btnShape">Short answer</p> -->
 			<div class="col-md-3 col-lg-3"></div>
 			<div class="Question col-md-6 col-lg-6 col-xs-12">
 				<table>
-					<!-- <tr>
-						<td>Q</td>
-						<td><input readonly type="text" name="ansQuestion" class="inputQuestion"></td>
-					</tr> -->
 				</table>
 				<div style="clear: both;"></div>
 			</div>
@@ -112,19 +107,16 @@
 	</div>
 </div>
 <script src="./assets/js/studentAnswer.js?<?= time(); ?>"></script>
-<?php
-	if( $new == ""){
-?>
 <script type="text/javascript">
 	var contents;
-	if( isNew != true){
-		contents = <?= $contents?>;
-		console.log(contents);
-		parseContents(contents);
-		parseAnswers(<?= $answers ?>);
+	contents = JSON.parse(<?= $contents?>);
+	console.log(contents);
+	parseContents(contents);
+	var answers = "";
+	var isNew = "<?= $isNew ?>";
+	if( isNew != ""){
+		answers = JSON.parse(<?= $answers ?>);
 	}
+	parseAnswers( answers);
 </script>
-<?php
-	}
-?>
 </body>

@@ -32,4 +32,4 @@ document.getElementById("exitIcon").onclick = function(){
 	setCookie("QuestionnaireAdminName", "");
 	setCookie("QuestionnaireAdminPass", "");
 	window.location.href = "admin.php";
-};
+}
