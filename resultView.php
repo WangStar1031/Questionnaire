@@ -16,20 +16,20 @@
 	table{ margin-left: 2%; width: 96%; display: block; }
 	table.hover{ display: none; }
 	td{ border: 1px solid black; text-align: center; }
-	h3{ text-align: left; margin-top: 0; }
+	h3{ text-align: left; margin-top: 0; text-align: center;}
 	.chkArea{ margin: auto; width: 15px; height: 15px; margin: 5px; border-radius: 50%; }
 	.chkPrints{ color: black; border: 1px solid red; margin-right: 20px; margin-left: 10px; font-weight: bold; }
 	.chkPrints:after{ content: "O"; }
 	.chkPrints.hover:after{ content: "X"; margin-left: 1px; margin-right: 1px; }
 	#exitIcon:hover{ cursor: pointer; }
 	#exitIcon{ position: relative; left: 49%; margin-bottom: -26px; }
-	.courseList, .topicList, .surveyList{ text-align: left; font-size: 1.5em; }
+	.courseList, .topicList, .surveyList{ text-align: left; font-size: 1.5em; border: 1px solid darkgray; padding: 10px; overflow: auto; height: 300px;}
 	.courseList li:hover, .topicList li:hover, .surveyList li:hover{ cursor: pointer; }
 	.courseId, .topicId, .surveyId{ display: none; }
 	.selOption{ padding-left: 1.1em; border: 1px solid #aaa; border-radius: 50%; margin-right: 10px;}
 	.mainOption{ background-color: #139dff; border: 1px solid #139dff; }
 	.btnBack, .btnNext{
-		color: white; background-color: #139dff; border-radius: 20px; width: 6em; float: right; margin: 5px; font-size: 20px;
+		color: white; background-color: #139dff; border-radius: 20px; width: 6em; float: right; margin: 5px; font-size: 20px; cursor: pointer;
 	}
 </style>
 <?php
@@ -157,6 +157,9 @@
 </div>
 <script type="text/javascript" src="assets/js/cookie.js"></script>
 <script type="text/javascript">
+	$(".ResultView").hide();
+	$(".topicList").hide();
+	$(".surveyList").hide();
 	var arrTitles = [];
 	arrTitles = JSON.parse('<?= $arrTitles ?>');
 	console.log(arrTitles);
@@ -283,23 +286,39 @@
 		$(".courseList li").filter(function(){
 			return $(this).find(".courseId").html() == _id;
 		}).find(".selOption").addClass("mainOption");
+		$(".topicList").show();
 	}
 	function topicClicked(_id){
 		$(".topicList li .selOption").removeClass("mainOption");
 		$(".topicList li").filter(function(){
 			return $(this).find(".topicId").html() == _id;
 		}).find(".selOption").addClass("mainOption");
+		$.ajax({
+			type: 'POST',
+			url: 'userManager.php',
+			data: {getSurveys: _id}
+		}).done(function (d) {
+			var surveys = JSON.parse(d);
+			var strHtml = "";
+			for( var i = 0; i < surveys.length; i++){
+				var survey = surveys[i];
+				strHtml += '<li onclick="surveyClicked('+survey.Id+')"><span class="selOption"></span><span class="surveyId">'+survey.Id+'</span><span class="surveyName">'+survey.SurveyName+'</span></li>';
+			}
+			$(".surveyList").html(strHtml);
+			$(".surveyList").show();
+		});
 	}
 	function surveyClicked(_id){
-		$(".surveyList li .selOption").removeClass("mainOption");
 		$(".surveyList li").filter(function(){
 			return $(this).find(".surveyId").html() == _id;
-		}).find(".selOption").addClass("mainOption");
+		}).find(".selOption").toggleClass("mainOption");
 	}
 	function nextClicked(){
 		$(".Category").hide();
+		$(".ResultView").show();
 	}
 	function backClicked(){
 		$(".Category").show();
+		$(".ResultView").hide();
 	}
 </script>
