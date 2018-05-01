@@ -5,80 +5,31 @@
 <link rel="stylesheet" type="text/css" href="./assets/css/studentAnswer.css?<?= time(); ?>">
 </head>
 <style type="text/css">
-	ul {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-	}
-	li .name{
-		font-size: 2em;
-		text-align: left;
-	}
-	.resultOption:after, .resultOption.hover:after{
-		color: red;
-		font-size: 0.5em;
-		cursor: pointer;
-	}
-	.resultOption:after{
-		content: 'View Results';
-	}
-	.resultOption.hover:after{
-		content: 'Hide Results';
-	}
-	.resultOption{
-		margin-left: 50px;
-	}
-	.StudentResults.hover{
-		display: none;
-	}
-	.StudentResults{
-		display: block;
-		border: 1px solid black;
-		padding: 10px;
-	}
-	table{
-		margin-left: 2%;
-		width: 96%;
-		display: block;
-	}
-	table.hover{
-		display: none;
-	}
-	td{
-		border: 1px solid black;
-		text-align: center;
-	}
-	h3{
-		text-align: left;
-		margin-top: 0;
-	}
-	.chkArea{
-		margin: auto;
-		width: 15px;
-		height: 15px;
-		margin: 5px;
-		border-radius: 50%;
-	}
-	.chkPrints{
-		color: black;
-		border: 1px solid red;
-		margin-right: 20px;
-		margin-left: 10px;
-		font-weight: bold;
-	}
-	.chkPrints:after{
-		content: "O";
-	}
-	.chkPrints.hover:after{
-		content: "X";
-		margin-left: 1px;
-		margin-right: 1px;
-	}
-	#exitIcon:hover{
-		cursor: pointer;
-	}
-	#exitIcon{
-		position: relative; left: 49%; margin-bottom: -26px;
+	ul { list-style-type: none; margin: 0; padding: 0; }
+	li .name{ font-size: 2em; text-align: left; }
+	.resultOption:after, .resultOption.hover:after{ color: red; font-size: 0.5em; cursor: pointer; }
+	.resultOption:after{ content: 'View Results'; }
+	.resultOption.hover:after{ content: 'Hide Results'; }
+	.resultOption{ margin-left: 50px; }
+	.StudentResults.hover{ display: none; }
+	.StudentResults{ display: block; border: 1px solid black; padding: 10px; }
+	table{ margin-left: 2%; width: 96%; display: block; }
+	table.hover{ display: none; }
+	td{ border: 1px solid black; text-align: center; }
+	h3{ text-align: left; margin-top: 0; }
+	.chkArea{ margin: auto; width: 15px; height: 15px; margin: 5px; border-radius: 50%; }
+	.chkPrints{ color: black; border: 1px solid red; margin-right: 20px; margin-left: 10px; font-weight: bold; }
+	.chkPrints:after{ content: "O"; }
+	.chkPrints.hover:after{ content: "X"; margin-left: 1px; margin-right: 1px; }
+	#exitIcon:hover{ cursor: pointer; }
+	#exitIcon{ position: relative; left: 49%; margin-bottom: -26px; }
+	.courseList, .topicList, .surveyList{ text-align: left; font-size: 1.5em; }
+	.courseList li:hover, .topicList li:hover, .surveyList li:hover{ cursor: pointer; }
+	.courseId, .topicId, .surveyId{ display: none; }
+	.selOption{ padding-left: 1.1em; border: 1px solid #aaa; border-radius: 50%; margin-right: 10px;}
+	.mainOption{ background-color: #139dff; border: 1px solid #139dff; }
+	.btnBack, .btnNext{
+		color: white; background-color: #139dff; border-radius: 20px; width: 6em; float: right; margin: 5px; font-size: 20px;
 	}
 </style>
 <?php
@@ -96,7 +47,76 @@
 		<div class="Header">
 			<h1>Result View</h1>
 		</div>
-		<div class="ResultView row">
+		<div class="Category row col-xs-12">
+			<div class="col-xs-4">
+				<h3>Course</h3>
+				<ul class="courseList">
+				<?php
+					include_once("userManager.php");
+					$courses = getCourseNames();
+					for( $i = 0; $i < count($courses); $i ++){
+						$course = $courses[$i];
+						$arrCourseInfo = array();
+						$arrCourseInfo = explode("---", $course);
+						$courseId = $arrCourseInfo[0];
+						$courseName = $arrCourseInfo[1];
+				?>
+					<li onclick="courseClicked(<?= $courseId ?>)">
+						<span class="selOption"></span>
+						<span class="courseId"><?= $courseId ?></span>
+						<span class="courseName"><?= $courseName ?></span>
+					</li>
+				<?php
+					}
+				?>
+				</ul>
+			</div>
+			<div class="col-xs-4">
+				<h3>Topic</h3>
+				<ul class="topicList">
+				<?php
+					$topics = getAllTopicNames();
+					$_idTopic = 0;
+					for( $i = 0; $i < count($topics); $i ++){
+						$topic = $topics[$i];
+						if( $i == 0) $_idTopic = $topic->Id;
+				?>
+					<li onclick="topicClicked(<?= $topic->Id ?>)">
+						<span class="selOption"></span>
+						<span class="topicId"><?= $topic->Id ?></span>
+						<span class="topicName"><?= $topic->TopicName ?></span>
+					</li>
+				<?php
+					}
+				?>
+				</ul>
+			</div>
+			<div class="col-xs-4">
+				<h3>Survey</h3>
+				<ul class="surveyList">
+				<?php
+					$surveys = getAllSurveysFromTopic($_idTopic);
+					for( $i = 0; $i < count($surveys); $i ++){
+						$survey = $surveys[$i];
+				?>
+					<li onclick="surveyClicked(<?= $survey->Id ?>)">
+						<span class="selOption"></span>
+						<span class="surveyId"><?= $survey->Id ?></span>
+						<span class="surveyName"><?= $survey->SurveyName ?></span>
+					</li>
+				<?php
+					}
+				?>
+				</ul>
+			</div>
+			<div class="col-xs-12">
+				<div class="btnNext" onclick="nextClicked()">Next</div>
+			</div>
+		</div>
+		<div class="ResultView row col-xs-12">
+			<div class="col-xs-12">
+				<div class="btnBack" onclick="backClicked()">Back</div>
+			</div>
 			<div class="col-lg-1 col-md-1"></div>
 			<div class="col-lg-10 col-md-10 col-xs-12">
 				<ul>
@@ -130,7 +150,7 @@
 			<br>
 		</div>
 		<div class="row">
-			<input class="btnShape" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Back" />
+			<input class="btnShape" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Goto Main page" />
 			<!-- <div class="col-lg-4 col-md-3 col-xs-2"></div> -->
 		</div>
 	</div>
@@ -257,5 +277,29 @@
 		document.body.innerHTML = printcontent;
 		window.print();
 		document.body.innerHTML = restorepage;
+	}
+	function courseClicked(_id){
+		$(".courseList li .selOption").removeClass("mainOption");
+		$(".courseList li").filter(function(){
+			return $(this).find(".courseId").html() == _id;
+		}).find(".selOption").addClass("mainOption");
+	}
+	function topicClicked(_id){
+		$(".topicList li .selOption").removeClass("mainOption");
+		$(".topicList li").filter(function(){
+			return $(this).find(".topicId").html() == _id;
+		}).find(".selOption").addClass("mainOption");
+	}
+	function surveyClicked(_id){
+		$(".surveyList li .selOption").removeClass("mainOption");
+		$(".surveyList li").filter(function(){
+			return $(this).find(".surveyId").html() == _id;
+		}).find(".selOption").addClass("mainOption");
+	}
+	function nextClicked(){
+		$(".Category").hide();
+	}
+	function backClicked(){
+		$(".Category").show();
 	}
 </script>
