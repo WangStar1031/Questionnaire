@@ -80,4 +80,19 @@
 		}
 		return $arrRet;
 	}
+	if( isset($_POST['getQuestions'])){
+		$arrRet = array();
+		$arrSurveys = $_POST['getQuestions'];
+		for( $i = 0; $i < count($arrSurveys); $i++){
+			$question = new stdClass();
+			$fileName = './assets/questions/'.$arrSurveys[$i].'.txt';
+			$question->isExist = false;
+			if( file_exists($fileName)){
+				$question->isExist = true;
+				$question->question = json_decode(file_get_contents($fileName));
+			}
+			array_push($arrRet, $question);
+		}
+		echo json_encode($arrRet);
+	}
 ?>

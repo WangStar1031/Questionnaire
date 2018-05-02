@@ -139,6 +139,8 @@
 	var g_courseId = 0;
 	var g_topicId = 0;
 	var g_arrSurveyIds = [];
+	var g_arrSurveyNames = [];
+	var g_arrQuestions = [];
 	$(".ResultView").hide();
 	$(".topicList").hide();
 	$(".surveyList").hide();
@@ -315,41 +317,116 @@
 		console.log(g_arrSurveyIds);
 		btnNextShow();
 	}
+	function drawAnswers(_objAnswer){
+		console.log(_objAnswer);
+		var strHtml = "";
+		strHtml += "<ul>";
+		for( var i = 0; i < g_arrSurveyIds.length; i++){
+			var surveyId = g_arrSurveyIds[i];
+			var surveyName = g_arrSurveyNames[i];
+			var question = g_arrQuestions[i].question;
+			// debugger;
+			strHtml += '<li>';
+			strHtml += surveyName;
+				strHtml += '<table>';
+					strHtml += '<tr>';
+						strHtml += '<td>question</td>';
+						for( var j = 0; j < question.Questions.length; j++){
+							strHtml += '<td>';
+							strHtml += question.Questions[j].question;
+							strHtml += '</td>';
+						}
+					strHtml += '</tr>'
+					strHtml += '<tr>';
+						strHtml += '<td>answer</td>';
+						if( _objAnswer.answer[i] == ""){
+							for( var j = 0; j < question.Questions.length; j++){
+								strHtml += '<td></td>';
+							}
+							continue;
+						}
+						for( var j = 0; j < _objAnswer.answer[i].Questions.length; j++){
+							var answer = _objAnswer.answer[i].Questions[j];
+							console.log(answer);
+							if( answer.Kind == "checkBoxSection"){
+								var arrAnswers = answer.answer.split(",");
+								var arrRealAnswers = [];
+								strHtml += '<td>';
+								for( var k = 0; k < arrAnswers.length; k++){
+									arrRealAnswers.push(question.Questions[j].answers[arrAnswers[k]].answer);
+								}
+								strHtml += arrRealAnswers.join(", ");
+								strHtml += '</td>';
+							} else if(answer.Kind == "shortAnswerSection"){
+								strHtml += '<td>' + answer.answer + '</td>';
+							} else{
+								// debugger;
+								strHtml += '<td>';
+									strHtml += question.Questions[j].answers[answer.answer].answer;
+								strHtml += '</td>';
+							}
+						}
+					strHtml += '</tr>';
+					// strHtml += 
+				strHtml += '</table>';
+			strHtml +='</li>';
+		}
+		strHtml += "</ul>";
+		$("#studentResult"+_objAnswer.uId).html(strHtml);
+	}
 	function nextClicked(){
 		$(".Category").hide();
 		$(".ResultView").show();
+		g_arrSurveyNames = [];
+		for( var i = 0; i < g_arrSurveyIds.length; i++){
+			var surveyId = g_arrSurveyIds[i];
+			var elem = $(".surveyList li").filter(function(){
+				return $(this).find(".surveyId").html() == surveyId;
+			});
+			g_arrSurveyNames.push(elem.find(".surveyName").html());
+		}
 		$.ajax({
 			type: 'POST',
-			url: 'userManager.php',
-			data: {getUsersFromCourseId: g_courseId}
-		}).done(function(d){
-			var arrUsers = JSON.parse(d);
-			var strHtml = "";
-			for( var i = 0; i < arrUsers.length; i++){
-				var user = arrUsers[i];
-				strHtml += '<li><span class="selOption" onclick="resultViewClicked('+user.Id+')"></span><span class="userId">'+user.Id+'</span><span class="userFName">'+user.FamilyName+'</span><span class="userGName">'+user.GivenName+'</span>';
-				if( user.isAnswer == true)
-					strHtml += '<span class="viewToggle" onclick="viewToggle('+user.Id+')">view Results</span>';
-				strHtml += '<div class="studentResult HideItem" id="studentResult'+user.Id+'"></div>';
-				strHtml += '</li>';
-			}
-			$(".resultList").html(strHtml);
-			for( var i = 0; i < arrUsers.length; i++){
-				var user = arrUsers[i];
-				if( user.isAnswer){
-					$.ajax({
-						type: 'POST',
-						url: 'questionManager.php',
-						datatype: 'JSON',
-						data: { getStudentAnswer: user.Id, arrSurveys: g_arrSurveyIds}
-					}).done(function(d){
-						var objAnswer = JSON.parse(d);
-						console.log(objAnswer.uId);
-						$("#studentResult"+objAnswer.uId).html(d);
-					});
+			url: 'questionManager.php',
+			datatype: 'JSON',
+			data: {getQuestions: g_arrSurveyIds}
+		}).done(function(questions){
+			g_arrQuestions = JSON.parse(questions);
+			$.ajax({
+				type: 'POST',
+				url: 'userManager.php',
+				data: {getUsersFromCourseId: g_courseId}
+			}).done(function(d){
+				var arrUsers = JSON.parse(d);
+				var strHtml = "";
+				for( var i = 0; i < arrUsers.length; i++){
+					var user = arrUsers[i];
+					strHtml += '<li><span class="selOption" onclick="resultViewClicked('+user.Id+')"></span><span class="userId">'+user.Id+'</span><span class="userFName">'+user.FamilyName+'</span><span class="userGName">'+user.GivenName+'</span>';
+					if( user.isAnswer == true)
+						strHtml += '<span class="viewToggle" onclick="viewToggle('+user.Id+')">view Results</span>';
+					strHtml += '<div class="studentResult HideItem" id="studentResult'+user.Id+'"></div>';
+					strHtml += '</li>';
 				}
-			}
+				$(".resultList").html(strHtml);
+				for( var i = 0; i < arrUsers.length; i++){
+					var user = arrUsers[i];
+					if( user.isAnswer){
+						$.ajax({
+							type: 'POST',
+							url: 'questionManager.php',
+							datatype: 'JSON',
+							data: { getStudentAnswer: user.Id, arrSurveys: g_arrSurveyIds}
+						}).done(function(d){
+							var objAnswer = JSON.parse(d);
+							drawAnswers(objAnswer);
+							console.log(objAnswer);
+							// $("#studentResult"+objAnswer.uId).html(d);
+						});
+					}
+				}
+			});
 		});
+	
 	}
 	function backClicked(){
 		$(".Category").show();
