@@ -17,17 +17,22 @@
 	}
 	if(isset($_POST['getStudentAnswer'])){
 		$studentId = $_POST['getStudentAnswer'];
-		$nCount = $_POST['fileCount'];
+		$arrSurveys = $_POST['arrSurveys'];
+		$objRet = new stdClass();
 		$arrRet = array();
-		for( $i = 1; $i <= $nCount; $i++){
-			$fileName = './assets/answers/'.$studentId.'_Lesson '.$i.'.txt';
+		for( $i = 0; $i < count($arrSurveys); $i++){
+			$survey = $arrSurveys[$i];
+			$fileName = './assets/answers/'.$studentId.'_'.$survey.'.txt';
+			// echo $fileName;
 			if( file_exists($fileName)){
 				array_push($arrRet, json_decode(file_get_contents($fileName)));
 			} else{
 				array_push($arrRet, "");
 			}
 		}
-		echo json_encode($arrRet);
+		$objRet->uId = $studentId;
+		$objRet->answer = $arrRet;
+		echo json_encode($objRet);
 	}
 	if( isset($_POST['changeTopics'])) {
 		$fName = './assets/questions/' . $_POST['changeTopics'] . '.txt';

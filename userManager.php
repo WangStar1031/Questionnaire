@@ -355,6 +355,23 @@
 		}
 		return $arrRet;
 	}
+	if( isset($_POST['getUsersFromCourseId'])){
+		$courseId = $_POST['getUsersFromCourseId'];
+		$arrUsers = getTeachersFromCourse($courseId);
+		$arrAnswers = scandir('assets/answers');
+		for($i = 0; $i < count($arrUsers); $i ++){
+			$user = $arrUsers[$i];
+			$prefix = $user->Id;
+			$arrUsers[$i]->isAnswer = false;
+			for($j = 0; $j < count($arrAnswers); $j++){
+				if( strpos( $arrAnswers[$j], $prefix) !== false){
+					$arrUsers[$i]->isAnswer = true;
+					break;
+				}
+			}
+		}
+		echo json_encode($arrUsers);
+	}
 	if( isset($_POST['getInfoFromCourseName'])){
 		$courseName = $_POST['getInfoFromCourseName'];
 		$courseId = getCourseIDFromName($courseName);
@@ -530,4 +547,23 @@
 	if( isset($_POST['changeSurveyName'])){
 		echo  changeSurveyName($_POST['changeSurveyName'], $_POST['newVal']);
 	}
+	// function getUserInfoFromCourse($_courseId){
+	// 	$conn = getConn();
+	// 	if( $conn->connect_error){
+	// 		return null;
+	// 	}
+	// 	$sql = "SELECT * FROM user WHERE CourseId='$_courseId'";
+	// 	$result = $conn->query($sql);
+	// 	$retVal = array();
+	// 	while($row = mysqli_fetch_assoc($result)){
+	// 		$user = new stdClass();
+	// 		$user->Id = $row['Id'];
+	// 		$user->CourseId = $row['CourseId'];
+	// 		$user->UserNumber = $row['UserNumber'];
+	// 		$user->FamilyName = $row['FamilyName'];
+	// 		$user->GivenName = $row['GivenName'];
+	// 		$user->UserPassword = $row['UserPassword'];
+	// 		$user->eMail = $row['eMail'];
+	// 	}
+	// }
 ?>
