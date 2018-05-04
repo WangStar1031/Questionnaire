@@ -34,6 +34,19 @@
 	.userFName, .userGName{ margin-right: 10px; }
 	.viewToggle{ position: relative; left: 20%; cursor: pointer; color: red; font-size: 0.8em;}
 	.HideItem{ display: none; }
+	.studentResult{ border: 1px solid black; padding: 20px; margin: 20px; }
+	.printBtn, .printAllBtn{ color: red; text-align: right; cursor: pointer; }
+	.printAllBtn{ margin-top: 20px; margin-bottom: 20px; float: left; margin-left: 30%;}
+	.selectAllOrNone{ cursor: pointer; float: left; margin-left: 7%; background-color: #139dff; margin-top: 20px; margin-bottom: 20px; color: white; font-size: 1.2em; padding: 0px 10px 0px 10px; border-radius: 20px; }
+
+	@media all{
+		.page_break{ display: none; }
+	}
+	@media print{
+		.page_break{ display: block; page-break-before: always; }
+		.selOption, .userId, .printBtn, .viewToggle{ display: none; }
+		.HideItem{ display: block; }
+	}
 </style>
 <?php
 	include './userManager.php';
@@ -120,13 +133,25 @@
 			<div class="col-xs-12">
 				<div class="btnBack" onclick="backClicked()">Back</div>
 			</div>
-			<div class="col-lg-1 col-md-1"></div>
-			<div class="col-lg-10 col-md-10 col-xs-12">
+			<div class="col-xs-12">
+				<div>
+					<span onclick="selectAllOrNone()" class="selectAllOrNone">Select all/None</span>
+					<span class="printAllBtn" onclick="printAll()">Print</span>
+				</div>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
 				<ul class="resultList">
 				</ul>
 			</div>
-			<div class="col-lg-1 col-md-1"></div>
+			<div class="col-xs-1"></div>
 			<br>
+			<div class="col-xs-12">
+				<div>
+					<span onclick="selectAllOrNone()" class="selectAllOrNone">Select all/None</span>
+					<span class="printAllBtn" onclick="printAll()">Print</span>
+				</div>
+			</div>
 		</div>
 		<div class="row">
 			<input class="btnShape" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Goto Main page" style="margin-top: 20px;" />
@@ -153,108 +178,12 @@
 	}
 	var arrTitles = [];
 	arrTitles = JSON.parse('<?= $arrTitles ?>');
-	console.log(arrTitles);
-	// function viewToggle(nId, uId){
-	// 	$(".resultOption").eq(nId).toggleClass('hover');
-	// 	$(".StudentResults").eq(nId).toggleClass('hover');
-	// 	if( $(".StudentResults").eq(nId).html() == ""){
-	// 		var strHtml = "";
-	// 		strHtml += '<p style="text-align: left;color: red;">select to view individual results</p>';
-	// 		for( var i = 0; i < arrTitles.length; i++){
-	// 			strHtml += '<div class="answerPan"><div class="chkArea fLeft" id="chk_'+uId+'_'+i+'" onclick="chkClick('+uId+','+i+')"></div>';
-	// 			strHtml += '<h3>' + arrTitles[i].Topic + '</h3>';
-	// 			strHtml += '<table class="hover">';
-	// 			strHtml += '<tr>';
-	// 			strHtml += '<td>question</td>'
-	// 			for( var j = 0; j < arrTitles[i].Questions.length; j++){
-	// 				strHtml += '<td>' + arrTitles[i].Questions[j].question + '</td>';
-	// 			}
-	// 			strHtml += '</tr>';
-	// 			strHtml += '<tr>';
-	// 			strHtml += '<td>answer</td>'
-	// 			for( var j = 0; j < arrTitles[i].Questions.length; j++){
-	// 				strHtml += '<td id="answer_'+uId+'_' + i + '_' + j + '"></td>';
-	// 			}
-	// 			strHtml += '</tr>';
-	// 			strHtml += '<tr>';
-	// 			strHtml += '<td>feedback</td>'
-	// 			for( var j = 0; j < arrTitles[i].Questions.length; j++){
-	// 				strHtml += '<td id="feedback_'+uId+'_' + i + '_' + j + '"></td>';
-	// 			}
-	// 			strHtml += '</tr>';
-	// 			strHtml += '</table></div>';
-	// 		}
-	// 		strHtml += "<div class='row'><p style='color:red;float:right;cursor:pointer;margin-right:20px;' id='chkPrint_"+uId+"' onclick='onPrint("+uId+")'>Print</p></div>";
-	// 		$(".StudentResults").eq(nId).html(strHtml);
-	// 		$.ajax({
-	// 			type: 'POST',
-	// 			url: 'questionManager.php',
-	// 			data: {getStudentAnswer: uId, fileCount:arrTitles.length}
-	// 		}).done(function (d) {
-	// 			var retVal = JSON.parse(d);
-	// 			console.log(retVal);
-	// 			for( var i = 0; i < retVal.length; i++){
-	// 				if( retVal[i] == "")continue;
-	// 				var question = retVal[i].Questions;
-	// 				for( var j = 0; j < question.length; j++){
-	// 					if( question[j].Kind == "shortAnswerSection"){
-	// 						if( question[j].answer == "")
-	// 							$("#answer_"+uId+"_"+i+"_"+j).html("no answer");
-	// 						else
-	// 							$("#answer_"+uId+"_"+i+"_"+j).html(question[j].answer);
-	// 					} else{
-	// 						var answerIds = [];
-	// 						answerIds = question[j].answer.split(",");
-	// 						var strHtml = '';
-	// 						if( answerIds.length == 0)
-	// 							strHtml = 'no answer';
-	// 						for( var k = 0; k < answerIds.length; k++){
-	// 							if( k == 0)
-	// 								strHtml += arrTitles[i].Questions[j].answers[parseInt(answerIds[k])].answer;
-	// 							else
-	// 								strHtml += ", " + arrTitles[i].Questions[j].answers[parseInt(answerIds[k])].answer;
-	// 						}
-	// 						$("#answer_"+uId+"_"+i+"_"+j).html( strHtml);
-	// 					}
-	// 				}
-	// 			}
-	// 			for( var i = 0; i < retVal.length; i++){
-	// 				if( retVal[i] == "")continue;
-	// 				var question = retVal[i].Questions;
-	// 				for( var j = 0; j < question.length; j++){
-	// 					if(arrTitles[i].Questions[j].feedBack.isNeed == "false")
-	// 						continue;
-	// 					if( question[j].Kind == "shortAnswerSection"){
-	// 						$("#feedback_"+uId+"_"+i+"_"+j).html(arrTitles[i].Questions[j].feedBack[0]);
-	// 					} else{
-	// 						$("#feedback_"+uId+"_"+i+"_"+j).html(arrTitles[i].Questions[j].feedBack[0]);
 
-	// 						var answerIds = [];
-	// 						answerIds = question[j].answer.split(",");
-	// 						var strHtml = '';
-	// 						if( answerIds.length == 0)
-	// 							strHtml = 'no answer';
-	// 						for( var k = 0; k < answerIds.length; k++){
-	// 							if( k == 0)
-	// 								strHtml += arrTitles[i].Questions[j].feedBack.feedbacks[parseInt(answerIds[k])].feedback;
-	// 							else
-	// 								strHtml += ", " + arrTitles[i].Questions[j].feedBack.feedbacks[parseInt(answerIds[k])].feedback;
-	// 							console.log(strHtml);
-	// 						}
-	// 						$("#feedback_"+uId+"_"+i+"_"+j).html( strHtml);
-	// 					}
-	// 				}
-	// 			}
-	// 		});
-	// 	}
-	// }
 	function chkClick(nUId,nQId){
 		$("#chk_"+nUId+"_"+nQId).toggleClass('hover');
 		$("#li_"+nUId).find(".answerPan").eq(nQId).find("table").toggleClass('hover');
 	}
 	function onPrint(nUId){
-		// document.getElementById("li_"+nUId).print();
-
 		var restorepage = document.body.innerHTML;
 		$("#li_"+nUId).find(".StudentResults p").eq(0).remove();
 		$("#chkPrint_"+nUId).remove();
@@ -343,6 +272,9 @@
 							for( var j = 0; j < question.Questions.length; j++){
 								strHtml += '<td></td>';
 							}
+							strHtml +='</tr>';
+							strHtml +='</table>';
+							strHtml +='</li>';
 							continue;
 						}
 						for( var j = 0; j < _objAnswer.answer[i].Questions.length; j++){
@@ -367,11 +299,11 @@
 							}
 						}
 					strHtml += '</tr>';
-					// strHtml += 
 				strHtml += '</table>';
 			strHtml +='</li>';
 		}
 		strHtml += "</ul>";
+		strHtml += "<div class='printBtn' onclick='printOne("+_objAnswer.uId+")'>Print</div>";
 		$("#studentResult"+_objAnswer.uId).html(strHtml);
 	}
 	function nextClicked(){
@@ -401,10 +333,11 @@
 				var strHtml = "";
 				for( var i = 0; i < arrUsers.length; i++){
 					var user = arrUsers[i];
-					strHtml += '<li><span class="selOption" onclick="resultViewClicked('+user.Id+')"></span><span class="userId">'+user.Id+'</span><span class="userFName">'+user.FamilyName+'</span><span class="userGName">'+user.GivenName+'</span>';
+					strHtml += '<li id="result_'+user.Id+'"><span class="selOption" onclick="resultViewClicked('+user.Id+')"></span><span class="userId">'+user.Id+'</span><span class="userFName">'+user.FamilyName+'</span><span class="userGName">'+user.GivenName+'</span>';
 					if( user.isAnswer == true)
 						strHtml += '<span class="viewToggle" onclick="viewToggle('+user.Id+')">view Results</span>';
 					strHtml += '<div class="studentResult HideItem" id="studentResult'+user.Id+'"></div>';
+					strHtml += "<div class='page_break'></div>";
 					strHtml += '</li>';
 				}
 				$(".resultList").html(strHtml);
@@ -419,8 +352,6 @@
 						}).done(function(d){
 							var objAnswer = JSON.parse(d);
 							drawAnswers(objAnswer);
-							console.log(objAnswer);
-							// $("#studentResult"+objAnswer.uId).html(d);
 						});
 					}
 				}
@@ -449,5 +380,34 @@
 		} else{
 			curItem.find(".viewToggle").html("show Results");
 		}
+	}
+	function printOne(_id){
+		var restorepage = document.body.innerHTML;
+		var printcontent = document.getElementById('result_'+_id).innerHTML;
+		document.body.innerHTML = printcontent;
+		window.print();
+		document.body.innerHTML = restorepage;	
+	}
+	var isSelAll = false;
+	function selectAllOrNone(){
+		isSelAll = !isSelAll;
+		if( isSelAll){
+			$(".resultList li .selOption").addClass("mainOption");
+		} else{
+			$(".resultList li .selOption").removeClass("mainOption");
+		}
+	}
+	function printAll(){
+		var restorepage = document.body.innerHTML;
+		var arrSelectedLis = $(".resultList li").filter(function(){
+			return $(this).find(".selOption").hasClass("mainOption");
+		});
+		var strPrintContents = "";
+		for( var i = 0; i < arrSelectedLis.length; i++){
+			strPrintContents += arrSelectedLis.eq(i).html();
+		}
+		document.body.innerHTML = strPrintContents;
+		window.print();
+		document.body.innerHTML = restorepage;
 	}
 </script>
