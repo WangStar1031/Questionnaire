@@ -241,7 +241,7 @@
 							strHtml += question.Questions[j].question;
 							strHtml += '</td>';
 						}
-					strHtml += '</tr>'
+					strHtml += '</tr>';
 					strHtml += '<tr>';
 						strHtml += '<td>answer</td>';
 						if( _objAnswer.answer[i] == ""){
@@ -270,6 +270,32 @@
 							} else{
 								strHtml += '<td>';
 									strHtml += question.Questions[j].answers[answer.answer].answer;
+								strHtml += '</td>';
+							}
+						}
+					strHtml += '</tr>';
+					strHtml += '<tr>';
+						strHtml += '<td>feedback</td>';
+						for( var j = 0; j < _objAnswer.answer[i].Questions.length; j++){
+							var answer = _objAnswer.answer[i].Questions[j];
+							if( question.Questions[j].feedBack.isNeed == "false"){
+								strHtml += '<td></td>';
+								continue;
+							}
+							if( answer.Kind == "checkBoxSection"){
+								var arrAnswers = answer.answer.split(",");
+								var arrRealAnswers = [];
+								strHtml += '<td>';
+								for( var k = 0; k < arrAnswers.length; k++){
+									arrRealAnswers.push(question.Questions[j].feedBack.feedbacks[arrAnswers[k]].feedback);
+								}
+								strHtml += arrRealAnswers.join(", ");
+								strHtml += '</td>';
+							} else if(answer.Kind == "shortAnswerSection"){
+								strHtml += '<td>' + answer.answer + '</td>';
+							} else{
+								strHtml += '<td>';
+									strHtml += question.Questions[j].feedBack.feedbacks[answer.answer].feedback;
 								strHtml += '</td>';
 							}
 						}
