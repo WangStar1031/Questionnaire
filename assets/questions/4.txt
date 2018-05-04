@@ -1,1 +1,1 @@
-{"Questions":[{"type":"Add multiple choice","selectKind":"No Lettering","question":"","answers":[{"chara":"","answer":"","hover":"false"}],"feedBack":{"isNeed":"false","feedbacks":[{"chara":"A","feedback":""}]}}]}
+{"Questions":[{"type":"Add multiple choice","selectKind":"No Lettering","question":"What is upper case? `A` or `a`","answers":[{"chara":"","answer":"A","hover":"false"},{"chara":"","answer":"a","hover":"false"}],"feedBack":{"isNeed":"false","feedbacks":[{"feedback":""},{"chara":"B","feedback":""}]}}]}

@@ -86,6 +86,8 @@ function saveQuestion(){
 			}
 		} else if( strKind == "shortAnswerSection"){
 			strAnswer = elemTrs.eq(0).find("textarea").val();
+			strAnswer = strAnswer.replace(/"/g, "`");
+			strAnswer = strAnswer.replace(/'/g, "`");
 		}
 		questions.answer = strAnswer;
 

@@ -191,7 +191,8 @@ function saveQuestion(){
 			elemKind = $("#Questions"+i).find(".shortAnswerSection");
 		}
 		strQuestion = elemKind.find(".Question table .inputQuestion").val();
-		strQuestion = strQuestion.replace("'","`");
+		strQuestion = strQuestion.replace(/'/g,"`");
+		strQuestion = strQuestion.replace(/"/g,"`");
 		questions.question = strQuestion;
 		var answers = [];
 		for( var j = 1; j < elemKind.find(".Question table tr").length; j++){
@@ -199,7 +200,8 @@ function saveQuestion(){
 			var answer = {};
 			answer.chara = elemTr.find(".chr").html();
 			answer.answer = elemTr.find(".answer").val();
-			answer.answer = answer.answer.replace("'","`");
+			answer.answer = answer.answer.replace(/'/g,"`");
+			answer.answer = answer.answer.replace(/"/g,"`");
 			answer.hover = elemTr.find(".chkArea").hasClass("hover");
 			answers.push(answer);
 		}
@@ -213,7 +215,8 @@ function saveQuestion(){
 			feedback.chara = elemTr.find(".chr").html();
 			// feedback.feedback = elemTr.find(".feedback").val();
 			var strBuff = "" + elemTr.find(".feedback").val();
-			feedback.feedback = strBuff.replace("'","`");
+			feedback.feedback = strBuff.replace(/'/g,"`");
+			feedback.feedback = strBuff.replace(/"/g,"`");
 			feedBacks.push(feedback);
 		}
 		feedBack.feedbacks = feedBacks;
