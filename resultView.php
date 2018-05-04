@@ -48,12 +48,6 @@
 		.HideItem{ display: block; }
 	}
 </style>
-<?php
-	include './userManager.php';
-	include './questionManager.php';
-	$arrAllUsers = getAllStudents();
-	$arrTitles = json_encode(getAllQuestions());
-?>
 <body>
 <div class="HOutLine container">
 </div>
@@ -166,6 +160,7 @@
 	var g_arrSurveyIds = [];
 	var g_arrSurveyNames = [];
 	var g_arrQuestions = [];
+	var isSelAll = false;
 	$(".ResultView").hide();
 	$(".topicList").hide();
 	$(".surveyList").hide();
@@ -176,28 +171,9 @@
 			$(".btnNext").show();
 		}
 	}
-	var arrTitles = [];
-	arrTitles = JSON.parse('<?= $arrTitles ?>');
-
 	function chkClick(nUId,nQId){
 		$("#chk_"+nUId+"_"+nQId).toggleClass('hover');
 		$("#li_"+nUId).find(".answerPan").eq(nQId).find("table").toggleClass('hover');
-	}
-	function onPrint(nUId){
-		var restorepage = document.body.innerHTML;
-		$("#li_"+nUId).find(".StudentResults p").eq(0).remove();
-		$("#chkPrint_"+nUId).remove();
-		$("#li_"+nUId).find(".name .resultOption").eq(0).remove();
-		var arrAnswers = $("#li_"+nUId).find(".StudentResults .answerPan");
-		for( var i = arrAnswers.length-1; i >= 0; i--){
-			if( ! arrAnswers.eq(i).find(".chkArea").hasClass("hover")){
-				arrAnswers.eq(i).remove();
-			}
-		}
-		var printcontent = document.getElementById("li_"+nUId).innerHTML;
-		document.body.innerHTML = printcontent;
-		window.print();
-		document.body.innerHTML = restorepage;
 	}
 	function courseClicked(_id){
 		$(".courseList li .selOption").removeClass("mainOption");
@@ -292,7 +268,6 @@
 							} else if(answer.Kind == "shortAnswerSection"){
 								strHtml += '<td>' + answer.answer + '</td>';
 							} else{
-								// debugger;
 								strHtml += '<td>';
 									strHtml += question.Questions[j].answers[answer.answer].answer;
 								strHtml += '</td>';
@@ -357,7 +332,6 @@
 				}
 			});
 		});
-	
 	}
 	function backClicked(){
 		$(".Category").show();
@@ -388,7 +362,6 @@
 		window.print();
 		document.body.innerHTML = restorepage;	
 	}
-	var isSelAll = false;
 	function selectAllOrNone(){
 		isSelAll = !isSelAll;
 		if( isSelAll){
@@ -398,14 +371,18 @@
 		}
 	}
 	function printAll(){
-		var restorepage = document.body.innerHTML;
 		var arrSelectedLis = $(".resultList li").filter(function(){
 			return $(this).find(".selOption").hasClass("mainOption");
 		});
+		if( arrSelectedLis.length == 0){
+			alert("No selected.");
+			return;
+		}
 		var strPrintContents = "";
 		for( var i = 0; i < arrSelectedLis.length; i++){
 			strPrintContents += arrSelectedLis.eq(i).html();
 		}
+		var restorepage = document.body.innerHTML;
 		document.body.innerHTML = strPrintContents;
 		window.print();
 		document.body.innerHTML = restorepage;
