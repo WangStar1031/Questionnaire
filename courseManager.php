@@ -54,22 +54,6 @@
 				<div class="col-lg-3 col-md-2 col-xs-1"></div>
 				<div class="CourseTable col-lg-6 col-md-8 col-xs-12">
 					<table>
-			<?php
-				require_once "userManager.php";
-				$arrCourse = getCourseNames();
-				for( $i = 0; $i < count($arrCourse); $i++){
-					$curCourse = explode( '---', $arrCourse[$i]);
-					$courseId = $curCourse[0];
-					$courseName = $curCourse[1];
-			?>
-					<tr>
-						<td><input type="text" name="newCourseName" readonly value="<?= $courseName ?>"></td>
-						<td class="edtBtn" onclick="editCourse(<?= $i ?>)">&#x270E;</td>
-						<td class="delBtn" onclick="deleteCourse(<?= $i ?>)">&#x2716;</td>
-					</tr>
-			<?php
-				}
-			?>
 					</table>
 				</div>
 				<div class="col-lg-3 col-md-2 col-xs-1"></div>
@@ -165,7 +149,7 @@
 		<div class="btnConfirm">Confirm</div>
 	</div>
 </div>
-
+<script type="text/javascript" src="assets/js/cookie.js?<?= time() ?>"></script>
 <script type="text/javascript">
 	var modal = document.getElementById("myModal");
 	var btnConfirm = document.getElementsByClassName("btnConfirm")[0];
@@ -222,6 +206,26 @@
 			}
 		});
 	}
+	function getCourseNames(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
+		$.ajax({
+			method: "POST",
+			url: "userManager.php",
+			data: { getCourseNames: strTeacherName}
+		}).done( function(msg){
+			var arrCourses = JSON.parse(msg);
+			var strTableHtml = "";
+			var strOptionHtml = "";
+			for( var i = 0; i < arrCourses.length; i++){
+				var course = arrCourses[i];
+				strTableHtml += '<tr><td><input type="text" readonly value="'+course['CourseName']+'"></td><td class="edtBtn" onclick="editCourse('+i+')">&#x270E;</td><td class="delBtn" onclick="deleteCourse('+i+')">&#x2716;</td></tr>';
+				strOptionHtml += "<option>"+course['CourseName']+"</option>";
+			}
+			$(".CourseTable table").html(strTableHtml);
+			$("#courseSelect").html(strOptionHtml);
+		});
+	}
+	getCourseNames();
 	function addNewCourse(strCourseName){
 		var arrTrs = $(".CourseTable").find("table tr");
 		var isEqual = false;
@@ -344,23 +348,6 @@
 		}
 		document.getElementById("uploadExcelForm").submit();
 	};
-	// function changeNumberOrder(_type){
-	// 	$('.arrow').removeClass("activeArrow");
-	// 	switch(_type){
-	// 		case 'Number':
-	// 			$('.arrow').eq(0).addClass("activeArrow");
-	// 			break;
-	// 		case 'FamilyName':
-	// 			$('.arrow').eq(1).addClass("activeArrow");
-	// 			break;
-	// 		case 'GivenName':
-	// 			$('.arrow').eq(2).addClass("activeArrow");
-	// 			break;
-	// 		case 'eMail':
-	// 			$('.arrow').eq(3).addClass("activeArrow");
-	// 			break;
-	// 	}
-	// }
 	function changeOrderIcon(_index){
 		var retDir = 1; // down
 		if( $('.arrow').eq(_index).hasClass("activeArrow") ){

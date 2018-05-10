@@ -60,8 +60,8 @@
 			data: { adminVerify: strAdminName, password: strAdminPass}
 		}).done( function(msg){
 			if( msg == "YES"){
-				setCookie("QuestionnaireAdminName", strAdminName, 1);
-				setCookie("QuestionnaireAdminPass", strAdminPass, 1);
+				setCookie("QuestionnaireTeacherName", strAdminName, 1);
+				window.location.href = "admin_all.php";
 				document.getElementById("formSubmit").submit();
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");

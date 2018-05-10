@@ -8,7 +8,7 @@
 
 <?php
 	include './userManager.php';
-	$arrUsers = getAllStudents();
+	// $arrUsers = getAllStudents();
 ?>
 <style type="text/css">
 	.activeArrow{
@@ -113,8 +113,9 @@
 		<table>
 			<tr>
 				<td>Course</td>
-				<td><select style="width: 100%;" id="newCourse">
-				<?php
+				<td>
+					<select style="width: 100%;" id="newCourse">
+<!-- 				<?php
 					$arrCourse = getCourseNames();
 					for( $i = 0; $i < count($arrCourse); $i++){
 						$courseName = explode("---", $arrCourse[$i]);
@@ -126,8 +127,9 @@
 					</script>
 				<?php						
 					}
-				?>
-				</select></td>
+				?> -->
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td>Number</td>
@@ -149,7 +151,7 @@
 		<div class="btnConfirm">Confirm</div>
 	</div>
 </div>
-<script type="text/javascript" src="assets/js/cookie.js"></script>
+<script type="text/javascript" src="assets/js/cookie.js?<?= time() ?>"></script>
 
 <script type="text/javascript">
 	var modal = document.getElementById("myModal");
@@ -172,11 +174,12 @@
 	}
 	var arrMembers = [];
 	function getAllStudents(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
 		$.ajax({
 			method: "POST",
 			url: "userManager.php",
 			datatype: "JSON",
-			data: { getAllStudents: "getAllStudents"}
+			data: { getAllStudents: strTeacherName}
 		}).done( function(msg){
 			arrMembers = JSON.parse(msg);
 			console.log(arrMembers);
@@ -184,6 +187,26 @@
 		});
 	}
 	getAllStudents();
+	function getAllCourseNames(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
+		$.ajax({
+			method: "POST",
+			url: "userManager.php",
+			datatype: "JSON",
+			data: { getCourseNames: strTeacherName}
+		}).done( function(msg){
+			var arrCourses = JSON.parse(msg);
+			var strHtml = "";
+			for( var i = 0; i < arrCourses.length; i++){
+				var course  = arrCourses[i];
+				strHtml += "<option>" + course['CourseName'] + "</option>";
+				arrCourseIds.push(course['Id']);
+				arrCourseNames.push(course['CourseName']);
+			}
+			$("#newCourse").html(strHtml);
+		});	
+	}
+	getAllCourseNames();
 	function drawTable(){
 		var strHtml = "";
 		for( var i = 0; i < arrMembers.length; i++){

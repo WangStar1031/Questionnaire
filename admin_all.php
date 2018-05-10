@@ -43,11 +43,6 @@
 	}
 </style>
 </head>
-<?php
-	if( !isset($_POST['adminName'])){
-		exit();
-	}
-?>
 <script type="text/javascript">
 	var arrTopics = [];
 </script>
@@ -66,52 +61,11 @@
 				<div class="col-xs-6">
 					<h3>Topics <span class="addNewBtn" onclick="addTopic()">+</span></h3>
 					<ul class="topicList">
-					<?php
-						include_once('userManager.php');
-						$arrTopics = getAllTopicNames($_POST['adminName']);
-						$idFirstTopic = 0;
-						if( $arrTopics){
-							$idFirstTopic = $arrTopics[0]->Id;
-							for( $i = 0; $i < count($arrTopics); $i++){
-								$topic = $arrTopics[$i];
-								$id = $topic->Id;
-								$name = $topic->TopicName;
-					?>
-						<li <?php if($i==0) echo 'class="selected"'; ?> onclick="topicClicked(<?= $id ?>)">
-							<span class="topicId"><?= $id ?></span>
-							<span class="topicName"><?= $name ?></span>
-							<span class="delTopic" onclick="delTopic(<?= $id ?>)">&#x2716;</span>
-							<span class="edtTopic" onclick="editTopic(<?= $id ?>)">&#x270E;</span>
-						</li>
-					<?php
-							}
-						} else{
-							echo "No Topics.";
-						}
-					?>
 					</ul>
 				</div>
 				<div class="col-xs-6">
 					<h3>Surveys <span class="addNewBtn" onclick="addSurvey()">+</span></h3>
 					<ul class="surveyList">
-					<?php
-						if( $idFirstTopic != 0){
-							$arrSurveys = getAllSurveysFromTopic( $idFirstTopic);
-							for( $i = 0; $i < count($arrSurveys); $i++){
-								$survey = $arrSurveys[$i];
-								$id = $survey->Id;
-								$name = $survey->SurveyName;
-					?>
-						<li>
-							<span class="surveyId"><?= $id ?></span>
-							<span class="surveyName"><a href="questionMaker.php?title=<?= $id ?>"><?= $name ?></a></span>
-							<span class="delSurvey" onclick="delSurvey(<?= $id ?>)">&#x2716;</span>
-							<span class="edtSurvey" onclick="editSurvey(<?= $id ?>)">&#x270E;</span>
-						</li>
-					<?php
-							}
-						}
-					?>
 					</ul>
 				</div>
 			</div>
@@ -136,6 +90,7 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="assets/js/cookie.js?<?= time() ?>"></script>
 <script type="text/javascript">
 	var elemTable = $("table");
 	for( var i = 1; i < $("table").find("tr").length; i++){
@@ -178,14 +133,35 @@
 			});
 		}
 	}
+	function getAllTopic(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
+		$.ajax({
+			method: "POST",
+			url: "userManager.php",
+			data: { getAllTopic: strTeacherName}
+		}).done( function(msg){
+			var arrTopics = JSON.parse(msg);
+			var strHtml = "";
+			for( var i = 0; i < arrTopics.length; i++){
+				var topic = arrTopics[i];
+				strHtml += '<li onclick="topicClicked('+topic.Id+')"><span class="topicId">'+topic.Id+'</span><span class="topicName">'+topic.TopicName+'</span><span class="delTopic" onclick="delTopic('+topic.Id+')">&#x2716;</span><span class="edtTopic" onclick="editTopic('+topic.Id+')">&#x270E;</span></li>';
+			}
+			$(".topicList").html(strHtml);
+			if( arrTopics.length != 0){
+				topicClicked(arrTopics[0].Id);
+			}
+		});
+	}
+	getAllTopic();
 	function addTopic(){
 		var newVal = prompt("Please enter new Topic Name.");
 		if( newVal != null){
+			var strTeacherName = getCookie("QuestionnaireTeacherName");
 			var names = $(".topicName");
 			$.ajax({
 				method: "POST",
 				url: "userManager.php",
-				data: { addTopic: newVal}
+				data: { addTopic: newVal, userName: strTeacherName}
 			}).done( function(msg){
 				var strHtml = '<li onclick="topicClicked('+msg+')"><span class="topicId">'+msg+'</span><span class="topicName">'+newVal+'</span><span class="delTopic" onclick="delTopic('+msg+')">&#x2716;</span><span class="edtTopic" onclick="editTopic('+msg+')">&#x270E;</span></li>';
 				$(".topicList").append(strHtml);
@@ -305,4 +281,3 @@
 		}
 	}
 </script>
-<script type="text/javascript" src="assets/js/cookie.js?"></script>

@@ -83,32 +83,46 @@
 		}
 		return false;
 	}
-	function getCourseNames(){
+	function getCourseNames($_teacherId){
 		$conn = getConn();
 		if( $conn->connect_error){
 			echo("Connection failed: " . $conn->connect_error);
 			return false;
 		}
-		$sql = "SELECT * FROM course";
+		$sql = "SELECT * FROM course WHERE userId='$_teacherId'";
 		$result = $conn->query($sql);
 		if( is_null($result))return array();
 		if( mysqli_num_rows($result) == 0)
 			return array();
 		$arrResult = array();
 		while( $row = mysqli_fetch_assoc($result)){
-			$CourseId = $row['Id'];
-			$CourseName = $row['CourseName'];
-			array_push($arrResult, $CourseId.'---'.$CourseName);
+			// $CourseId = $row['Id'];
+			// $CourseName = $row['CourseName'];
+			array_push($arrResult, $row);
 		}
 		return $arrResult;
 	}
-	function getAllStudents(){
+	if( isset($_POST['getCourseNames'])){
+		$teacherName = $_POST['getCourseNames'];
+		$teacherId = getTeacherIdFromName($teacherName);
+		echo json_encode(getCourseNames($teacherId));
+	}
+	function getAllStudents($_teacherId){
 		$conn = getConn();
 		if( $conn->connect_error){
 			echo("Connection failed: " . $conn->connect_error);
 			return false;
 		}
-		$sql = "SELECT CourseId, UserNumber, FamilyName, GivenName, eMail FROM user WHERE UserNumber <> ''";
+		$sql = "SELECT Id FROM course WHERE userId='$_teacherId'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0)
+			return array();
+		$arrCourseIds = array();
+		while ($row = mysqli_fetch_assoc($result)) {
+			array_push($arrCourseIds, $row['Id']);
+		}
+		$Ids = implode(",", $arrCourseIds);
+		$sql = "SELECT CourseId, UserNumber, FamilyName, GivenName, eMail FROM user WHERE CourseId in ($Ids)";
 		$result = $conn->query($sql);
 		if( is_null($result))return array();
 		if( mysqli_num_rows($result) == 0)
@@ -138,7 +152,8 @@
 		return $arrResult;
 	}
 	if(isset($_POST['getAllStudents'])){
-		echo json_encode(getAllStudents());
+		$teacherId = getTeacherIdFromName($_POST['getAllStudents']);
+		echo json_encode(getAllStudents($teacherId));
 	}
 	function addStudent($Number, $CourseId, $FName, $GName, $Mail){
 		$conn = getConn();
@@ -458,12 +473,12 @@
 		removeSurveyFromTopic($_id);
 		return true;
 	}
-	function insertNewTopic($_topicName){
+	function insertNewTopic($_topicName, $_userId){
 		$conn = getConn();
 		if( $conn->connect_error){
 			return false;
 		}
-		$sql = "INSERT INTO topic(TopicName) VALUES('$_topicName')";
+		$sql = "INSERT INTO topic(TopicName, userId) VALUES('$_topicName', '$userId')";
 		return $conn->query($sql);
 	}
 	function getAllSurveysFromTopic($_topicId){
@@ -527,8 +542,22 @@
 		$sql = "UPDATE survey SET SurveyName='$_newName' WHERE Id='$_id'";
 		return $conn->query($sql);
 	}
+	function getTeacherIdFromName($_userName){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return 0;
+		}
+		$sql = "SELECT Id FROM teacher WHERE userName='$_userName'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0)
+			return 0;
+		$row = mysqli_fetch_assoc($result);
+		return $row['Id'];
+	}
 	if(isset($_POST['addTopic'])){
-		if( insertNewTopic($_POST['addTopic'])){
+		$_userName = $_POST['userName'];
+		$_userId = getTeacherIdFromName($_userName);
+		if( insertNewTopic($_POST['addTopic'], $_userId)){
 			$arrRet = array();
 			$arrRet = getAllTopicNames();
 			echo $arrRet[count($arrRet) - 1]->Id;
@@ -598,5 +627,10 @@
 		$_password = $_POST['password'];
 		$userName = teacherVerify($_teacherName, $_password);
 		echo $userName;
+	}
+	if( isset($_POST['getAllTopic'])){
+		$_userName = $_POST['getAllTopic'];
+		$arrTopics = getAllTopicNames($_userName);
+		echo json_encode($arrTopics);
 	}
 ?>

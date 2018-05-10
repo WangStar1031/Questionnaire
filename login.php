@@ -63,14 +63,11 @@
 		}).done( function(msg){
 			if( msg != ""){
 				$("#adminName").val(msg);
-				setCookie("QuestionnaireUserName", strUserName, 1);
-				setCookie("QuestionnaireUserPass", strUserPass, 1);
-				// document.getElementById("formSubmit").submit();
+				setCookie("QuestionnaireTeacherName", strUserName, 1);
+				window.location.href = "admin_all.php";
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");
 			}
 		});
-		// console.log("ConfirmClicked");
-		// window.location.href = "admin_all.php";
 	}
 </script>

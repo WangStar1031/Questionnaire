@@ -21,15 +21,14 @@ function getCookie(cname) {
 	return "";
 }
 
-if( getCookie("QuestionnaireAdminName") == ""){
+if( getCookie("QuestionnaireTeacherName") == ""){
 	var locat = window.location.href;
-	if( locat.indexOf("admin.php") == -1){
-		window.location.href = "admin.php";
+	if( locat.indexOf("login.php") == -1){
+		window.location.href = "login.php";
 	}
 }
 document.getElementById("exitIcon").onclick = function(){
 	console.log("exit");
-	setCookie("QuestionnaireAdminName", "");
-	setCookie("QuestionnaireAdminPass", "");
-	window.location.href = "admin.php";
+	setCookie("QuestionnaireTeacherName", "");
+	window.location.href = "login.php";
 }
