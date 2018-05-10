@@ -62,8 +62,7 @@
 			data: { teacherVerify: strUserName, password: strUserPass}
 		}).done( function(msg){
 			if( msg != ""){
-				$("#adminName").val(msg);
-				setCookie("QuestionnaireTeacherName", strUserName, 1);
+				setCookie("QuestionnaireTeacherName", msg, 1);
 				window.location.href = "admin_all.php";
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");
