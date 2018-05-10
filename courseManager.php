@@ -240,10 +240,11 @@
 			alert("Exist Course Name");
 			return;
 		}
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
 		$.ajax({
 			method: "POST",
 			url: "userManager.php",
-			data: { newCourseName: strCourseName}
+			data: { newCourseName: strCourseName, strTeacherName: strTeacherName}
 		}).done( function(msg){
 			if( msg == "YES"){
 				var nCourseNum = $(".CourseTable").find("table tr").length;

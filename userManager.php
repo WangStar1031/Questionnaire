@@ -220,13 +220,13 @@
 			echo "NO";
 		}
 	}
-	function addCourseNames($courseName){
+	function addCourseNames($courseName, $teacherId){
 		$conn = getConn();
 		if( $conn->connect_error){
 			echo("Connection failed: " . $conn->connect_error);
 			return false;
 		}
-		$sql = "INSERT INTO course(CourseName) VALUES('$courseName')";
+		$sql = "INSERT INTO course(CourseName, userId) VALUES('$courseName', '$teacherId')";
 		$retVal = $conn->query($sql);
 		if( $retVal === TRUE || $retVal == TRUE){
 			return true;
@@ -235,7 +235,8 @@
 	}
 	if( isset($_POST['newCourseName'])){
 		$courseName = $_POST['newCourseName'];
-		if( addCourseNames($courseName) == true){
+		$teacherId = getTeacherIdFromName($_POST['strTeacherName']);
+		if( addCourseNames($courseName, $teacherId) == true){
 			echo "YES";
 		} else {
 			echo "NO";
