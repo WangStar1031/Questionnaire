@@ -43,7 +43,11 @@
 	}
 </style>
 </head>
-
+<?php
+	if( !isset($_POST['adminName'])){
+		exit();
+	}
+?>
 <script type="text/javascript">
 	var arrTopics = [];
 </script>
@@ -64,7 +68,7 @@
 					<ul class="topicList">
 					<?php
 						include_once('userManager.php');
-						$arrTopics = getAllTopicNames();
+						$arrTopics = getAllTopicNames($_POST['adminName']);
 						$idFirstTopic = 0;
 						if( $arrTopics){
 							$idFirstTopic = $arrTopics[0]->Id;

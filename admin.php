@@ -31,7 +31,7 @@
 	<div class="row" style="height: 50px;"></div>
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
 	<div class="col-xs-10 col-md-8 col-lg-4">
-		<form>
+		<form action="admin_all.php" method="post" id="formSubmit">
 			<p>* Required</p>
 			<label for adminName> Admin Name </label><br>
 			<input type="text" id="adminName" name="adminName" required><br>
@@ -43,7 +43,12 @@
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
 <script type="text/javascript" src="assets/js/cookie.js"></script>
 <script type="text/javascript">
-
+	function setCookie(cname,cvalue,exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires=" + d.toGMTString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
 	function ConfirmClicked(){
 		var strAdminName = $("#adminName").val();
 		var strAdminPass = $("#adminPass").val();
@@ -57,13 +62,10 @@
 			if( msg == "YES"){
 				setCookie("QuestionnaireAdminName", strAdminName, 1);
 				setCookie("QuestionnaireAdminPass", strAdminPass, 1);
-				// $(".RequiredMsg").addClass("HideItem");
-				window.location.href = "admin_all.php";
+				document.getElementById("formSubmit").submit();
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");
 			}
 		});
-		// console.log("ConfirmClicked");
-		// window.location.href = "admin_all.php";
 	}
 </script>

@@ -399,12 +399,22 @@
 		}
 	}
 
-	function getAllTopicNames(){
+	function getAllTopicNames($_userId){
 		$conn = getConn();
 		if( $conn->connect_error){
 			return false;
 		}
-		$sql = "SELECT * FROM topic ORDER BY Id";
+		$sql = "SELECT Id FROM teacher WHERE userName='$_userId'";
+		$result = $conn->query($sql);
+		$teacherId = 0;
+		if( $result->num_rows != 0){
+			$row = mysqli_fetch_assoc($result);
+			$teacherId = $row['Id'];
+		}
+		if( $teacherId == 0)
+			return array();
+
+		$sql = "SELECT * FROM topic WHERE userId='$teacherId' ORDER BY Id";
 		$result = $conn->query($sql);
 		$arrRetVal = array();
 		while($row = mysqli_fetch_assoc($result)){
@@ -547,23 +557,46 @@
 	if( isset($_POST['changeSurveyName'])){
 		echo  changeSurveyName($_POST['changeSurveyName'], $_POST['newVal']);
 	}
-	// function getUserInfoFromCourse($_courseId){
-	// 	$conn = getConn();
-	// 	if( $conn->connect_error){
-	// 		return null;
-	// 	}
-	// 	$sql = "SELECT * FROM user WHERE CourseId='$_courseId'";
-	// 	$result = $conn->query($sql);
-	// 	$retVal = array();
-	// 	while($row = mysqli_fetch_assoc($result)){
-	// 		$user = new stdClass();
-	// 		$user->Id = $row['Id'];
-	// 		$user->CourseId = $row['CourseId'];
-	// 		$user->UserNumber = $row['UserNumber'];
-	// 		$user->FamilyName = $row['FamilyName'];
-	// 		$user->GivenName = $row['GivenName'];
-	// 		$user->UserPassword = $row['UserPassword'];
-	// 		$user->eMail = $row['eMail'];
-	// 	}
-	// }
+	function insertTeacher($_mail, $_name, $_pass){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return false;
+		}
+		$sql = "SELECT Id FROM teacher WHERE userName='$_name' OR userMail='$_mail'";
+		$result = $conn->query($sql);
+		if( $result->num_rows > 0){
+			return false;
+		}
+		$sql = "INSERT INTO teacher(userName, userMail, userPassword) VALUES('$_name', '$_mail', '$_pass')";
+		return $conn->query($sql);
+	}
+	if( isset($_POST['userSignup'])){
+		$_mail = $_POST['userSignup'];
+		$_name = $_POST['userName'];
+		$_pass = $_POST['userPass'];
+		if( insertTeacher($_mail, $_name, $_pass)){
+			echo "YES";
+		} else{
+			echo "NO";
+		}
+	}
+	function teacherVerify($_name, $_pass){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return "";
+		}
+		$sql = "SELECT * FROM teacher WHERE (userName='$_name' OR userMail='$_name') AND userPassword='$_pass'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0){
+			return "";
+		}
+		$row = mysqli_fetch_assoc($result);
+		return $row['userName'];
+	}
+	if( isset($_POST['teacherVerify'])){
+		$_teacherName = $_POST['teacherVerify'];
+		$_password = $_POST['password'];
+		$userName = teacherVerify($_teacherName, $_password);
+		echo $userName;
+	}
 ?>

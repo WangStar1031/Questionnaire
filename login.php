@@ -12,7 +12,7 @@
 	<div class="row">
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
 	<div class="col-xs-10 col-md-8 col-lg-4 RequiredMsg HideItem">
-		<h3>Invalid admin Name or Password!</h3>
+		<h3>Invalid User Name or Password!</h3>
 	</div>
 	</div>
 
@@ -31,13 +31,14 @@
 	<div class="row" style="height: 50px;"></div>
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
 	<div class="col-xs-10 col-md-8 col-lg-4">
-		<form>
+		<form action="admin_all.php" method="post" id="formSubmit">
 			<p>* Required</p>
-			<label for userMail> User Email </label><br>
+			<label for userMail> User Email or Name </label><br>
 			<input type="text" id="userMail" name="userMail" required><br>
 			<label for userPass> User Password </label><br>
 			<input type="password" id="userPass" name="userPass" required><br><br>
 			<input type="button" name="" value="Confirm" onclick="ConfirmClicked()">
+			<input type="text" id="adminName" name="adminName" style="display: none;">
 		</form>
 		<p>If you don't have account, please <a href="signup.php">Signup</a>.</p>
 	</div>
@@ -46,20 +47,25 @@
 <script type="text/javascript" src="assets/js/cookie.js"></script>
 -->
 <script type="text/javascript">
-
+	function setCookie(cname,cvalue,exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires=" + d.toGMTString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
 	function ConfirmClicked(){
 		var strUserName = $("#userMail").val();
 		var strUserPass = $("#userPass").val();
 		$.ajax({
 			method: "POST",
 			url: "userManager.php",
-			data: { userVerify: strUserName, password: strUserPass}
+			data: { teacherVerify: strUserName, password: strUserPass}
 		}).done( function(msg){
-			if( msg == "YES"){
-				setCookie("QuestionnaireAdminName", strAdminName, 1);
-				setCookie("QuestionnaireAdminPass", strAdminPass, 1);
-				// $(".RequiredMsg").addClass("HideItem");
-				window.location.href = "admin_all.php";
+			if( msg != ""){
+				$("#adminName").val(msg);
+				setCookie("QuestionnaireUserName", strUserName, 1);
+				setCookie("QuestionnaireUserPass", strUserPass, 1);
+				// document.getElementById("formSubmit").submit();
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");
 			}

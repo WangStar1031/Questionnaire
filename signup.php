@@ -7,16 +7,6 @@
 	.HideItem{
 		display: none;
 	}
-</style>
-	<div class="row" style="height: 50px;"></div>
-	<div class="row">
-	<div class="col-xs-1 col-md-2 col-lg-4"></div>
-	<div class="col-xs-10 col-md-8 col-lg-4 RequiredMsg HideItem">
-		<h3>Invalid admin Name or Password!</h3>
-	</div>
-	</div>
-
-<style type="text/css">
 	label, input{
 		font-size: 2em;
 	}
@@ -29,6 +19,14 @@
 	}
 </style>
 	<div class="row" style="height: 50px;"></div>
+	<div class="row">
+	<div class="col-xs-1 col-md-2 col-lg-4"></div>
+	<div class="col-xs-10 col-md-8 col-lg-4 RequiredMsg HideItem">
+		<h3>Existing User name or email.</h3>
+	</div>
+	</div>
+
+	<div class="row" style="height: 50px;"></div>
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
 	<div class="col-xs-10 col-md-8 col-lg-4">
 		<form>
@@ -40,13 +38,10 @@
 			<input type="password" id="userPass" name="userPass" required><br><br>
 			<input type="button" name="" value="Confirm" onclick="ConfirmClicked()">
 		</form>
+		<p>go to <a href="login.php">Login page</a>.</p>
 	</div>
 	<div class="col-xs-1 col-md-2 col-lg-4"></div>
-<!-- 
-<script type="text/javascript" src="assets/js/cookie.js"></script>
--->
 <script type="text/javascript">
-
 	function ConfirmClicked(){
 		var strUserMail = $("#userMail").val();
 		var strUserName = $("#userName").val();
@@ -54,18 +49,13 @@
 		$.ajax({
 			method: "POST",
 			url: "userManager.php",
-			data: { userSignup: strUserMail, userName: strUserMail, password: strUserPass}
+			data: { userSignup: strUserMail, userName: strUserName, userPass: strUserPass}
 		}).done( function(msg){
 			if( msg == "YES"){
-				setCookie("QuestionnaireAdminName", strAdminName, 1);
-				setCookie("QuestionnaireAdminPass", strAdminPass, 1);
-				// $(".RequiredMsg").addClass("HideItem");
-				window.location.href = "admin_all.php";
+				window.location.href = "login.php";
 			} else{
 				$(".RequiredMsg").removeClass("HideItem");
 			}
 		});
-		// console.log("ConfirmClicked");
-		// window.location.href = "admin_all.php";
 	}
 </script>
