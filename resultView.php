@@ -83,7 +83,7 @@
 			</div>
 			<div class="col-xs-4">
 				<h3>Topic</h3>
-				<ul class="topicList">
+				<ul class="topicList"><!-- 
 				<?php
 					$topics = getAllTopicNames();
 					$_idTopic = 0;
@@ -98,7 +98,7 @@
 					</li>
 				<?php
 					}
-				?>
+				?> -->
 				</ul>
 			</div>
 			<div class="col-xs-4">
@@ -153,7 +153,7 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="assets/js/cookie.js"></script>
+<script type="text/javascript" src="assets/js/cookie.js?<?= time() ?>"></script>
 <script type="text/javascript">
 	var g_courseId = 0;
 	var g_topicId = 0;
@@ -165,6 +165,40 @@
 	$(".topicList").hide();
 	$(".surveyList").hide();
 	$(".btnNext").hide();
+	function getAllTopic(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
+		$.ajax({
+			method: "POST",
+			url: "userManager.php",
+			data: { getAllTopic: strTeacherName}
+		}).done( function(msg){
+			var arrTopics = JSON.parse(msg);
+			var strHtml = "";
+			for( var i = 0; i < arrTopics.length; i++){
+				var topic = arrTopics[i];
+				strHtml += '<li onclick="topicClicked('+topic.Id+')"><span class="selOption"></span><span class="topicId">'+topic.Id+'</span><span class="topicName">'+topic.TopicName+'</span></li>';
+			}
+			$(".topicList").html(strHtml);
+		});
+	}
+	getAllTopic();
+	function getCourseNames(){
+		var strTeacherName = getCookie("QuestionnaireTeacherName");
+		$.ajax({
+			method: "POST",
+			url: "userManager.php",
+			data: { getCourseNames: strTeacherName}
+		}).done( function(msg){
+			var arrCourses = JSON.parse(msg);
+			var strHtml = "";
+			for( var i = 0; i < arrCourses.length; i++){
+				var course = arrCourses[i];
+				strHtml += '<li onclick="courseClicked('+course['Id']+')"><span class="selOption"></span><span class="courseId">'+course['Id']+'</span><span class="courseName">'+course['CourseName']+'</span></li>';
+			}
+			$(".courseList").html(strHtml);
+		});
+	}
+	getCourseNames();
 	function btnNextShow(){
 		$(".btnNext").hide();
 		if( g_courseId != 0 && g_topicId != 0 && g_arrSurveyIds.length != 0){
