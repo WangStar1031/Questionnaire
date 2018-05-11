@@ -634,4 +634,51 @@
 		$arrTopics = getAllTopicNames($_userName);
 		echo json_encode($arrTopics);
 	}
+	function getTeacherIdFromUserId($_userId){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return 0;
+		}
+		$sql = "SELECT CourseId FROM user WHERE Id='$_userId'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0){
+			return 0;
+		}
+		$row = mysqli_fetch_assoc($result);
+		$courseId = $row['CourseId'];
+		$sql = "SELECT userId FROM course WHERE Id='$courseId'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0)
+			return 0;
+		$row = mysqli_fetch_assoc($result);
+		$teacherId = $row['userId'];
+		return $teacherId;
+	}
+	function getTeacherNameFromId($_teacherId){
+		$conn = getConn();
+		if( $conn->connect_error){
+			return "";
+		}
+		$sql = "SELECT userName FROM teacher WHERE Id='$_teacherId'";
+		$result = $conn->query($sql);
+		if( $result->num_rows == 0){
+			return "";
+		}
+		$row = mysqli_fetch_assoc($result);
+		return $row['userName'];
+	}
+	if( isset($_POST['getAllTopicFromUserId'])){
+		$_userId = $_POST['getAllTopicFromUserId'];
+		$teacherId = getTeacherIdFromUserId($_userId);
+		if( $teacherId == 0){
+			echo "";
+		} else{
+			$teacherName = getTeacherNameFromId($teacherId);
+			if( $teacherName == ""){
+				echo "";
+			} else{
+				echo json_encode(getAllTopicNames($teacherName));
+			}
+		}
+	}
 ?>

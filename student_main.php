@@ -34,6 +34,7 @@
 ?>
 <script type="text/javascript">
 	var arrTopics = [];
+	var userId = '<?= $userId ?>';
 	console.log(<?= $userId ?>);
 </script>
 <body>
@@ -51,27 +52,6 @@
 				<div class="col-xs-6">
 					<h3>Topics</h3>
 					<ul class="topicList">
-<!-- 					<?php
-						include_once('userManager.php');
-						$arrTopics = getAllTopicNames();
-						$idFirstTopic = 0;
-						if( $arrTopics){
-							$idFirstTopic = $arrTopics[0]->Id;
-							for( $i = 0; $i < count($arrTopics); $i++){
-								$topic = $arrTopics[$i];
-								$id = $topic->Id;
-								$name = $topic->TopicName;
-					?>
-						<li <?php if($i==0) echo 'class="selected"'; ?> onclick="topicClicked(<?= $id ?>)">
-							<span class="topicId"><?= $id ?></span>
-							<span class="topicName"><?= $name ?></span>
-						</li>
-					<?php
-							}
-						} else{
-							echo "No Topics.";
-						}
-					?> -->
 					</ul>
 				</div>
 				<div class="col-xs-6">
@@ -128,7 +108,7 @@ function getAllTopic(){
 	$.ajax({
 		method: "POST",
 		url: "userManager.php",
-		data: { getAllTopic: strTeacherName}
+		data: { getAllTopicFromUserId: userId}
 	}).done( function(msg){
 		var arrTopics = JSON.parse(msg);
 		var strHtml = "";
