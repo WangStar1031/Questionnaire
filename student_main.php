@@ -51,7 +51,7 @@
 				<div class="col-xs-6">
 					<h3>Topics</h3>
 					<ul class="topicList">
-					<?php
+<!-- 					<?php
 						include_once('userManager.php');
 						$arrTopics = getAllTopicNames();
 						$idFirstTopic = 0;
@@ -71,28 +71,12 @@
 						} else{
 							echo "No Topics.";
 						}
-					?>
+					?> -->
 					</ul>
 				</div>
 				<div class="col-xs-6">
 					<h3>Surveys</h3>
 					<ul class="surveyList">
-					<?php
-						if( $idFirstTopic != 0){
-							$arrSurveys = getAllSurveysFromTopic( $idFirstTopic);
-							for( $i = 0; $i < count($arrSurveys); $i++){
-								$survey = $arrSurveys[$i];
-								$id = $survey->Id;
-								$name = $survey->SurveyName;
-					?>
-						<li>
-							<span class="surveyId"><?= $id ?></span>
-							<span class="surveyName"><a href="studentAnswer.php?uId=<?= $userId ?>&title=<?= $id ?>"><?= $name ?></a></span>
-						</li>
-					<?php
-							}
-						}
-					?>
 					</ul>
 				</div>
 			</div>
@@ -108,33 +92,7 @@
 <?php
 }
 ?>
-<script type="text/javascript">	
-function topicClicked(_idTopic){
-	var arrLis = $(".topicList li");
-	for( i = 0; i < arrLis.length; i++){
-		var elem = arrLis.eq(i).find(".topicId").eq(0);
-		if( elem.html() == _idTopic){
-			arrLis.removeClass("selected");
-			arrLis.eq(i).addClass("selected");
-			$.ajax({
-				method: "POST",
-				url: "userManager.php",
-				datatype: "json",
-				data: { getSurveys: _idTopic}
-			}).done( function(msg){
-				var arrSurveys = JSON.parse(msg);
-				console.log(arrSurveys);
-				var strHtml = "";
-				for( var i = 0; i < arrSurveys.length; i++){
-					var survey = arrSurveys[i];
-					strHtml += '<li><span class="surveyId">'+survey.Id+'</span><span class="surveyName"><a href="studentAnswer.php?uId='+'<?= $userId ?>'+'&title='+survey.Id+'">'+survey.SurveyName+'</a></span></li>';
-				}
-				$(".surveyList li").remove();
-				$(".surveyList").append(strHtml);
-			});
-		}
-	}
-}
+<script type="text/javascript">
 function setCookie(cname,cvalue,exdays) {
 	var d = new Date();
 	d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -164,5 +122,53 @@ document.getElementById("exitIconST").onclick = function(){
 	console.log("exit");
 	setCookie("QuestionnaireStudentName", "");
 	window.location.href = "student.php";
+}
+function getAllTopic(){
+	var strTeacherName = getCookie("QuestionnaireStudentName");
+	$.ajax({
+		method: "POST",
+		url: "userManager.php",
+		data: { getAllTopic: strTeacherName}
+	}).done( function(msg){
+		var arrTopics = JSON.parse(msg);
+		var strHtml = "";
+		for( var i = 0; i < arrTopics.length; i++){
+			var topic = arrTopics[i];
+			if( i == 0){
+				strHtml += '<li class="selected" onclick="topicClicked('+topic.Id+')"><span class="topicId">'+topic.Id+'</span><span class="topicName">'+topic.TopicName+'</span></li>';
+			} else{
+				strHtml += '<li onclick="topicClicked('+topic.Id+')"><span class="topicId">'+topic.Id+'</span><span class="topicName">'+topic.TopicName+'</span></li>';
+			}
+		}
+		$(".topicList").html(strHtml);
+		topicClicked(arrTopics[0].Id);
+	});
+}
+getAllTopic();	
+function topicClicked(_idTopic){
+	var arrLis = $(".topicList li");
+	for( i = 0; i < arrLis.length; i++){
+		var elem = arrLis.eq(i).find(".topicId").eq(0);
+		if( elem.html() == _idTopic){
+			arrLis.removeClass("selected");
+			arrLis.eq(i).addClass("selected");
+			$.ajax({
+				method: "POST",
+				url: "userManager.php",
+				datatype: "json",
+				data: { getSurveys: _idTopic}
+			}).done( function(msg){
+				var arrSurveys = JSON.parse(msg);
+				console.log(arrSurveys);
+				var strHtml = "";
+				for( var i = 0; i < arrSurveys.length; i++){
+					var survey = arrSurveys[i];
+					strHtml += '<li><span class="surveyId">'+survey.Id+'</span><span class="surveyName"><a href="studentAnswer.php?uId='+'<?= $userId ?>'+'&title='+survey.Id+'">'+survey.SurveyName+'</a></span></li>';
+				}
+				$(".surveyList li").remove();
+				$(".surveyList").append(strHtml);
+			});
+		}
+	}
 }
 </script>
