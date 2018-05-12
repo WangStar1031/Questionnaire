@@ -61,24 +61,6 @@
 			<div class="col-xs-4">
 				<h3>Course</h3>
 				<ul class="courseList">
-				<?php
-					include_once("userManager.php");
-					$courses = getCourseNames();
-					for( $i = 0; $i < count($courses); $i ++){
-						$course = $courses[$i];
-						$arrCourseInfo = array();
-						$arrCourseInfo = explode("---", $course);
-						$courseId = $arrCourseInfo[0];
-						$courseName = $arrCourseInfo[1];
-				?>
-					<li onclick="courseClicked(<?= $courseId ?>)">
-						<span class="selOption"></span>
-						<span class="courseId"><?= $courseId ?></span>
-						<span class="courseName"><?= $courseName ?></span>
-					</li>
-				<?php
-					}
-				?>
 				</ul>
 			</div>
 			<div class="col-xs-4">
