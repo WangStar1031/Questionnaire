@@ -53,7 +53,7 @@
 </div>
 <div class="BOutLine container">
 	<div class="fBody">
-		<img  id="exitIcon" src="./assets/img/exit.png">
+		<img  id="exitIcon" src="./assets/img/exit.png" onclick="exitIconClicked()">
 		<div class="Header">
 			<h1>Result View</h1>
 		</div>
@@ -83,40 +83,12 @@
 			</div>
 			<div class="col-xs-4">
 				<h3>Topic</h3>
-				<ul class="topicList"><!-- 
-				<?php
-					$topics = getAllTopicNames();
-					$_idTopic = 0;
-					for( $i = 0; $i < count($topics); $i ++){
-						$topic = $topics[$i];
-						if( $i == 0) $_idTopic = $topic->Id;
-				?>
-					<li onclick="topicClicked(<?= $topic->Id ?>)">
-						<span class="selOption"></span>
-						<span class="topicId"><?= $topic->Id ?></span>
-						<span class="topicName"><?= $topic->TopicName ?></span>
-					</li>
-				<?php
-					}
-				?> -->
+				<ul class="topicList">
 				</ul>
 			</div>
 			<div class="col-xs-4">
 				<h3>Survey</h3>
 				<ul class="surveyList">
-				<?php
-					$surveys = getAllSurveysFromTopic($_idTopic);
-					for( $i = 0; $i < count($surveys); $i ++){
-						$survey = $surveys[$i];
-				?>
-					<li onclick="surveyClicked(<?= $survey->Id ?>)">
-						<span class="selOption"></span>
-						<span class="surveyId"><?= $survey->Id ?></span>
-						<span class="surveyName"><?= $survey->SurveyName ?></span>
-					</li>
-				<?php
-					}
-				?>
 				</ul>
 			</div>
 			<div class="col-xs-12">
@@ -149,12 +121,45 @@
 		</div>
 		<div class="row">
 			<input class="btnShape" action="action" onclick="window.location.href='admin_all.php'; return false;" type="button" value="Goto Main page" style="margin-top: 20px;" />
-			<!-- <div class="col-lg-4 col-md-3 col-xs-2"></div> -->
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="assets/js/cookie.js?<?= time() ?>"></script>
 <script type="text/javascript">
+function setCookie(cname,cvalue,exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires=" + d.toGMTString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+if( getCookie("QuestionnaireTeacherName") == ""){
+	var locat = window.location.href;
+	if( locat.indexOf("login.php") == -1){
+		window.location.href = "login.php";
+	}
+}
+function exitIconClicked(){
+	console.log("exit");
+	setCookie("QuestionnaireTeacherName", "");
+	window.location.href = "login.php";
+}
+
 	var g_courseId = 0;
 	var g_topicId = 0;
 	var g_arrSurveyIds = [];
